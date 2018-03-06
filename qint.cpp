@@ -180,25 +180,40 @@ void strtobit(char *num, int bits[], int size)
 // chuyen 1 block (bu 2) sang so nguyen
 int blocktoint(int bits[], int from, int to)
 {
-	if (to - from + 1 != 16) {
-		printf("Block khong du 16 bit\n");
+	int size = to - from + 1;
+	if (size != 32) {
+		printf("Block khong du 32 bit\n");
 		return 0;
 	}
-	int temp_bits[16];
-	for (int i = 0; i < 16; ++i) {
+	int temp_bits[size];
+	for (int i = 0; i < size; ++i) {
 		temp_bits[i] = bits[from + i];
 	}
+	int laSoAm = 0;
 	if (temp_bits[0] == 1) {
-		// So am
-		doiDau(temp_bits, 16);
+		laSoAm = 1;
+		doiDau(temp_bits, size);
 	}
+	int result = 0;
+	for (int i = 0; i < size; ++i) {
+		result = result * 2 + temp_bits[i];
+	}
+	return laSoAm == 0 ? result : -result;
 }
 
 QInt b128toQInt(int bits[128])
 {
-	QInt result;
-	for (int i = 0; i < 4; ++i) {
-		result.block[i] = i;
+	QInt x;
+	for (int i = 0, j = 0; i < 4; ++i, j += 32) {
+		x.block[i] = blocktoint(bits, j, j + 31);
 	}
-	return result;
+	return x;
+}
+
+void inQInt(QInt x)
+{
+	for (int i = 0; i < 4; ++i) {
+		printf("%d ", x.block[i]);
+	}
+	printf("\n");
 }
