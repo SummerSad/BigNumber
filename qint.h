@@ -9,6 +9,8 @@ struct QInt {
 int power2(int i);
 void cong1(int bits[128]);
 void tru1(int bits[128]);
-void in(int bits[128]);
+void in128(int bits[128]);
+void nghichDao(int bits[128]);
+void doiDau(int bits[128]);
 
 #endif

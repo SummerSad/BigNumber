@@ -21,8 +21,10 @@ int power2(int i)
 void cong1(int bits[128])
 {
 	if (bits[127] == 0) {
+		// 0 + 1 = 1
 		bits[127] = 1;
 	} else {
+		// 1 + 1 = 10
 		bits[127] = 0;
 		int d = 1;
 		for (int i = 126; i >= 0; --i) {
@@ -41,8 +43,10 @@ void cong1(int bits[128])
 void tru1(int bits[128])
 {
 	if (bits[127] == 1) {
+		// 1 - 1 = 0
 		bits[127] = 0;
 	} else {
+		// (1)0 - 1 = 1
 		bits[127] = 1;
 		int d = 1;
 		for (int i = 126; i >= 0; --i) {
@@ -58,10 +62,31 @@ void tru1(int bits[128])
 	}
 }
 
-void in(int bits[128])
+void in128(int bits[128])
 {
 	for (int i = 0; i < 128; ++i) {
 		printf("%d", bits[i]);
 	}
 	printf("\n");
+}
+
+// 101 -> 010
+void nghichDao(int bits[128])
+{
+	for (int i = 0; i < 128; ++i) {
+		bits[i] = 1 - bits[i];
+	}
+}
+
+// am -> duong va nguoc lai (bu 2)
+void doiDau(int bits[128])
+{
+	if (bits[0] == 0) {
+		// so duong
+		nghichDao(bits);
+		cong1(bits);
+	} else {
+		tru1(bits);
+		nghichDao(bits);
+	}
 }
