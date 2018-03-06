@@ -12,5 +12,8 @@ void tru1(int bits[128]);
 void in128(int bits[128]);
 void nghichDao(int bits[128]);
 void doiDau(int bits[128]);
+int laChuSo(char c);
+int laHopLe(char *num);
+void chia2(char *num);
 
 #endif

@@ -1,5 +1,7 @@
 #include "qint.h"
 #include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
 
 // Ham phu tro
 int power2(int i)
@@ -89,4 +91,49 @@ void doiDau(int bits[128])
 		tru1(bits);
 		nghichDao(bits);
 	}
+}
+
+int laChuSo(char c)
+{
+	return c >= '0' && c <= '9';
+}
+
+int laHopLe(char *num)
+{
+	if (!num || strlen(num) <= 0)
+		return 0;
+	int i = 0;
+	if (num[i] == '+' || num[i] == '-')
+		++i;
+	for (; num[i] != '\0'; ++i) {
+		if (!laChuSo(num[i]))
+			return 0;
+	}
+	return 1;
+}
+
+// luu y sau khi chia 2
+// ket qua luon duong
+// dau se luu sau
+void chia2(char *num)
+{
+	char *thuong = malloc(sizeof(char) * (strlen(num) + 1));
+
+	int i = 0;
+	if (num[i] == '-' || num[i] == '+')
+		++i;
+	int temp = num[i] - '0';
+	if (num[i] == '1') {
+		temp = temp * 10 + num[i + 1] - '0';
+		++i;
+	}
+
+	int j = 0;
+	for (; num[i] != '\0'; ++i) {
+		thuong[j++] = temp / 2 + '0';
+		temp = (temp % 2) * 10 + num[i + 1] - '0';
+	}
+
+	strcpy(num, thuong);
+	free(thuong);
 }
