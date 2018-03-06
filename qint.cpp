@@ -20,16 +20,16 @@ int power2(int i)
 	return 2 * power2(i - 1);
 }
 
-void cong1(int bits[128])
+void cong1(int bits[], int size)
 {
-	if (bits[127] == 0) {
+	if (bits[size - 1] == 0) {
 		// 0 + 1 = 1
-		bits[127] = 1;
+		bits[size - 1] = 1;
 	} else {
 		// 1 + 1 = 10
-		bits[127] = 0;
+		bits[size - 1] = 0;
 		int d = 1;
-		for (int i = 126; i >= 0; --i) {
+		for (int i = size - 2; i >= 0; --i) {
 			if (d == 0)
 				break;
 			if (bits[i] == 0) {
@@ -42,16 +42,16 @@ void cong1(int bits[128])
 	}
 }
 
-void tru1(int bits[128])
+void tru1(int bits[], int size)
 {
-	if (bits[127] == 1) {
+	if (bits[size - 1] == 1) {
 		// 1 - 1 = 0
-		bits[127] = 0;
+		bits[size - 1] = 0;
 	} else {
 		// (1)0 - 1 = 1
-		bits[127] = 1;
+		bits[size - 1] = 1;
 		int d = 1;
-		for (int i = 126; i >= 0; --i) {
+		for (int i = size - 2; i >= 0; --i) {
 			if (d == 0)
 				break;
 			if (bits[i] == 1) {
@@ -64,32 +64,32 @@ void tru1(int bits[128])
 	}
 }
 
-void in128(int bits[128])
+void inbit(int bits[], int size)
 {
-	for (int i = 0; i < 128; ++i) {
+	for (int i = 0; i < size; ++i) {
 		printf("%d", bits[i]);
 	}
 	printf("\n");
 }
 
 // 101 -> 010
-void nghichDao(int bits[128])
+void nghichDao(int bits[], int size)
 {
-	for (int i = 0; i < 128; ++i) {
+	for (int i = 0; i < size; ++i) {
 		bits[i] = 1 - bits[i];
 	}
 }
 
 // am -> duong va nguoc lai (bu 2)
-void doiDau(int bits[128])
+void doiDau(int bits[], int size)
 {
 	if (bits[0] == 0) {
 		// so duong
-		nghichDao(bits);
-		cong1(bits);
+		nghichDao(bits, size);
+		cong1(bits, size);
 	} else {
-		tru1(bits);
-		nghichDao(bits);
+		tru1(bits, size);
+		nghichDao(bits, size);
 	}
 }
 
@@ -117,7 +117,7 @@ int laHopLe(char *num)
 // dau se luu sau
 void chia2(char *num)
 {
-	char *thuong = malloc(sizeof(char) * (strlen(num) + 1));
+	char *thuong = (char *)malloc(sizeof(char) * (strlen(num) + 1));
 
 	int i = 0;
 	if (num[i] == '-' || num[i] == '+')
@@ -143,12 +143,12 @@ void chia2(char *num)
 	free(thuong);
 }
 
-void strtob128(char *num, int bits[128])
+void strtobit(char *num, int bits[], int size)
 {
 	if (!laHopLe(num)) {
 		printf("Input khong hop le\n");
 	}
-	char *temp_num = malloc(sizeof(char) * (strlen(num) + 1));
+	char *temp_num = (char *)malloc(sizeof(char) * (strlen(num) + 1));
 	temp_num[strlen(num)] = '\0';
 	strcpy(temp_num, num);
 
@@ -161,7 +161,7 @@ void strtob128(char *num, int bits[128])
 		++i;
 	}
 
-	for (int i = 127; i >= 0; --i) {
+	for (i = 127; i >= 0; --i) {
 		if ((temp_num[strlen(temp_num) - 1] - '0') % 2 == 0) {
 			bits[i] = 0;
 		} else {
@@ -171,8 +171,34 @@ void strtob128(char *num, int bits[128])
 	}
 
 	if (laSoAm) {
-		doiDau(bits);
+		doiDau(bits, size);
 	}
 
 	free(temp_num);
+}
+
+// chuyen 1 block (bu 2) sang so nguyen
+int blocktoint(int bits[], int from, int to)
+{
+	if (to - from + 1 != 16) {
+		printf("Block khong du 16 bit\n");
+		return 0;
+	}
+	int temp_bits[16];
+	for (int i = 0; i < 16; ++i) {
+		temp_bits[i] = bits[from + i];
+	}
+	if (temp_bits[0] == 1) {
+		// So am
+		doiDau(temp_bits, 16);
+	}
+}
+
+QInt b128toQInt(int bits[128])
+{
+	QInt result;
+	for (int i = 0; i < 4; ++i) {
+		result.block[i] = i;
+	}
+	return result;
 }

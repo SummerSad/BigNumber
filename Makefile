@@ -1,6 +1,6 @@
-CC = gcc
+CC = g++
 CFLAGS = -Wall -Wextra -g
-SRCS = $(wildcard *.c)
+SRCS = $(wildcard *.cpp)
 
 all:
 	$(CC) $(CFLAGS) $(SRCS)
