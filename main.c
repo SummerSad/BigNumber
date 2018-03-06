@@ -3,8 +3,9 @@
 
 int main()
 {
-	char num[] = "-1123";
-	chia2(num);
-	printf("%s\n", num);
+	char num[] = "-100";
+	int bits[128];
+	strtob128(num, bits);
+	in128(bits);
 	return 0;
 }

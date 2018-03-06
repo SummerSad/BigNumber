@@ -123,7 +123,12 @@ void chia2(char *num)
 	if (num[i] == '-' || num[i] == '+')
 		++i;
 	int temp = num[i] - '0';
-	if (num[i] == '1') {
+	if (num[i] - '0' < 2) {
+		if (num[i + 1] == '\0') {
+			strcpy(num, "0");
+			free(thuong);
+			return;
+		}
 		temp = temp * 10 + num[i + 1] - '0';
 		++i;
 	}
@@ -133,7 +138,41 @@ void chia2(char *num)
 		thuong[j++] = temp / 2 + '0';
 		temp = (temp % 2) * 10 + num[i + 1] - '0';
 	}
-
+	thuong[j] = '\0';
 	strcpy(num, thuong);
 	free(thuong);
+}
+
+void strtob128(char *num, int bits[128])
+{
+	if (!laHopLe(num)) {
+		printf("Input khong hop le\n");
+	}
+	char *temp_num = malloc(sizeof(char) * (strlen(num) + 1));
+	temp_num[strlen(num)] = '\0';
+	strcpy(temp_num, num);
+
+	int i = 0;
+	int laSoAm = 0;
+	if (temp_num[i] == '-' || temp_num[i] == '+') {
+		if (temp_num[i] == '-') {
+			laSoAm = 1;
+		}
+		++i;
+	}
+
+	for (int i = 127; i >= 0; --i) {
+		if ((temp_num[strlen(temp_num) - 1] - '0') % 2 == 0) {
+			bits[i] = 0;
+		} else {
+			bits[i] = 1;
+		}
+		chia2(temp_num);
+	}
+
+	if (laSoAm) {
+		doiDau(bits);
+	}
+
+	free(temp_num);
 }

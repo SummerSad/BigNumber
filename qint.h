@@ -15,5 +15,6 @@ void doiDau(int bits[128]);
 int laChuSo(char c);
 int laHopLe(char *num);
 void chia2(char *num);
+void strtob128(char *num, int bits[128]);
 
 #endif
