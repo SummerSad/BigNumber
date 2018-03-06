@@ -1,0 +1,5 @@
+*.exe
+*.h.gch
+*.o
+*.out
+*.stackdump
