@@ -358,6 +358,8 @@ void bit_to_str(bool bits[], int size)
 	while (num[i] == '0') {
 		++i;
 	}
+	if (i == max_size)
+		--i;
 	printf("%s\n", num + i);
 	free(temp_bits);
 	free(num);
@@ -438,6 +440,78 @@ char *DecToHex(QInt q)
 	return BinToHex(bits);
 }
 
+/* Xu ly toan tu + - * /
+ * tran so cua cong: am + am = duong va duong + duong = am
+ * tru la nguoc lai cua cong
+ * nhan su dung booth
+ */
+bool *cong(bool *bits_1, bool *bits_2, int size)
+{
+	bool laSoAm_1 = 0;
+	if (bits_1[0] == 1)
+		laSoAm_1 = 1;
+	bool laSoAm_2 = 0;
+	if (bits_2[0] == 1)
+		laSoAm_2 = 1;
+
+	bool *tong = (bool *)malloc(sizeof(bool) * (size));
+	int rememberNumber = 0; // 1 + 1 = 0 remember 1
+	for (int i = size - 1; i >= 0; --i) {
+		if (rememberNumber == 0) {
+			if (bits_1[i] == 1 && bits_2[i] == 1) {
+				tong[i] = 0;
+				rememberNumber = 1;
+			} else {
+				if (bits_1[i] == 0 && bits_2[i] == 0)
+					tong[i] = 0;
+				else
+					tong[i] = 1;
+			}
+		} else {
+			if (bits_1[i] == 0 && bits_2[i] == 0) {
+				tong[i] = 1;
+				rememberNumber = 0;
+			} else {
+				if (bits_1[i] == 1 && bits_2[i] == 1)
+					tong[i] = 1;
+				else
+					tong[i] = 0;
+			}
+		}
+	}
+	if (laSoAm_1 && laSoAm_2) {
+		if (tong[0] == 0)
+			printf("am + am = duong, tran so\n");
+	}
+	if (!laSoAm_1 && !laSoAm_2) {
+		if (tong[0] == 1)
+			printf("duong + duong = am, tran so\n");
+	}
+	return tong;
+}
+
+QInt operator+(QInt a, QInt b)
+{
+	bool *bits_1 = DecToBin(a);
+	bool *bits_2 = DecToBin(b);
+	bool *tong = cong(bits_1, bits_2, 128);
+	QInt q = BinToDec(tong);
+	free(bits_1);
+	free(bits_2);
+	free(tong);
+	return q;
+}
+
+QInt operator-(QInt a, QInt b)
+{
+	// tru la cong voi so doi
+	bool *bits_2 = DecToBin(b);
+	doiDau(bits_2, 128);
+	QInt new_b = BinToDec(bits_2);
+	free(bits_2);
+	return a + new_b;
+}
+
 // Cac ham kiem tra
 void test_input_convert()
 {
@@ -464,4 +538,17 @@ void test_input_convert()
 	free(s2);
 
 	free(bits);
+}
+
+void test_cong_tru()
+{
+	QInt q_1, q_2;
+	ScanQInt(q_1);
+	ScanQInt(q_2);
+	printf("Tong\n");
+	QInt q_3 = q_1 + q_2;
+	PrintQInt(q_3);
+	printf("Hieu\n");
+	QInt q_4 = q_1 - q_2;
+	PrintQInt(q_4);
 }

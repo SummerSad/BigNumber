@@ -55,7 +55,18 @@ int nibble_to_uint(bool bits[], int from, int to);
 char *BinToHex(bool *bits);
 char *DecToHex(QInt q);
 
+/* Xu ly toan tu + - * /
+ * tran so cua cong: am + am = duong va duong + duong = am
+ * tru la nguoc lai cua cong
+ * nhan su dung booth
+ */
+bool *cong(bool *bits_1, bool *bits_2, int size);
+QInt operator+(QInt a, QInt b);
+QInt operator-(QInt a, QInt b);
+// TODO: nhan bang booth
+
 // Cac ham kiem tra
 void test_input_convert();
+void test_cong_tru();
 
 #endif
