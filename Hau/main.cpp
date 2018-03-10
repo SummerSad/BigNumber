@@ -6,15 +6,9 @@ int main()
 {
 	QInt q;
 	ScanQInt(q);
-	// PrintQInt(q);
-
-	bool *bits = DecToBin(q);
-	in_bit(bits, 128);
-	char *text = BinToHex(bits);
-	printf("Hexa: %s\n", text);
-	free(bits);
-	free(text);
-	int t = -123456;
-	printf("%x\n", t);
+	char *s = DecToHex(q);
+	printf("Hexa %s\n", s);
+	free(s);
+	printf("%x\n", -2123);
 	return 0;
 }

@@ -373,7 +373,7 @@ void ScanQInt(QInt &q)
 	bool bits[128];
 	str_to_bit(num, bits, 128);
 	q = b128_to_QInt(bits);
-	in_QInt(q);
+	// in_QInt(q);
 }
 
 void PrintQInt(QInt q)
@@ -416,6 +416,7 @@ char *BinToHex(bool *bits)
 {
 	// cu 4 bits la 1 chu so hexa
 	// 128 : 4 = 32
+	// chuyen doi tung nibble (4-bit)
 	const int size = 32;
 	char *hexas = (char *)malloc(sizeof(char) * (size + 1));
 	hexas[size] = '\0';
@@ -425,4 +426,15 @@ char *BinToHex(bool *bits)
 		hexas[i] = hexa_digit[d];
 	}
 	return hexas;
+}
+
+char *DecToHex(QInt q)
+{
+	bool *temp_bits = DecToBin(q);
+	bool bits[128];
+	for (int i = 0; i < 128; ++i) {
+		bits[i] = temp_bits[i];
+	}
+	free(temp_bits);
+	return BinToHex(bits);
 }
