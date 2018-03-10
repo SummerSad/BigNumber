@@ -61,6 +61,9 @@ char *DecToHex(QInt q);
  * nhan su dung booth
  */
 bool *cong(bool *bits_1, bool *bits_2, int size);
+QInt operator+(QInt a, QInt b);
+QInt operator-(QInt a, QInt b);
+// TODO: nhan bang booth
 
 // Cac ham kiem tra
 void test_input_convert();
