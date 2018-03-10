@@ -161,6 +161,10 @@ void str_to_bit(char *num, int bits[], int size)
 {
 	if (!laHopLe(num)) {
 		printf("Input khong hop le\n");
+		for (int i = 0; i < size; ++i) {
+			bits[i] = 0;
+		}
+		return;
 	}
 	char *temp_num = (char *)malloc(sizeof(char) * (strlen(num) + 1));
 	temp_num[strlen(num)] = '\0';
@@ -259,4 +263,101 @@ void QInt_to_b128(QInt q, int bits[128])
 	for (int i = 0, y = 0; i < 4; ++i, y += 32) {
 		int_to_block(q.block[i], bits, y, y + 31);
 	}
+}
+
+// A = A + B (10-digits, A va B > 0)
+void cong_str(char *A, char *B)
+{
+	if (!A || !B || strlen(A) != strlen(B)) {
+		printf("A, B khong cung chieu dai\n");
+		return;
+	}
+	int d = 0;
+	for (int i = strlen(A) - 1; i >= 0; --i) {
+		int sum = A[i] - '0' + B[i] - '0' + d;
+		A[i] = sum % 10 + '0';
+		d = sum / 10;
+	}
+}
+
+// num = num * 2 (10-digits, num > 0)
+void nhan_2(char *num)
+{
+	if (!num || strlen(num) < 1) {
+		printf("num khong hop le\n");
+		return;
+	}
+	int d = 0;
+	for (int i = strlen(num) - 1; i >= 0; --i) {
+		int mult = (num[i] - '0') * 2 + d;
+		num[i] = mult % 10 + '0';
+		d = mult / 10;
+	}
+}
+
+/* vi du doi 0101(2) ra 10-digits
+ * di tu phai qua trai, cho num = 0
+ * so 1 dau tien la 2^0 -> cong vao num
+ * so 1 cuoi cung la 2^2 -> cong vao num
+ */
+void bit_to_str(int bits[], int size)
+{
+	if (size > 128) {
+		printf("Day bit lon hon 128, bo qua\n");
+		return;
+	}
+
+	// Kiem tra so am
+	int *temp_bits = (int *)malloc(sizeof(int) * size);
+	for (int i = 0; i < size; ++i) {
+		temp_bits[i] = bits[i];
+	}
+	int laSoAm = 0;
+	if (temp_bits[0] == 1) {
+		laSoAm = 1;
+		doiDau(temp_bits, size);
+	}
+
+	// 2^10 = 1024 xap xi 10^3, 128 : 3 = 42
+	// nen so thap phan khong qua
+	// 43 chu so, lay 50 cho chac
+	const int max_size = 50;
+
+	// xay dung num="00..01"
+	// roi nhan 2 dan dan theo temp_bits[]
+	char *num = (char *)malloc(sizeof(char) * (max_size + 1));
+	num[max_size] = '\0';
+	for (int i = 0; i < max_size; ++i) {
+		num[i] = '0';
+	}
+
+	// temp_bits[] -> num
+	for (int i = 0; i < 128; ++i) {
+		if (temp_bits[127 - i] == 1) {
+			// lay 2^i
+			char *temp =
+			    (char *)malloc(sizeof(char) * (max_size + 1));
+			temp[max_size] = '\0';
+			for (int i = 0; i < max_size - 1; ++i) {
+				temp[i] = '0';
+			}
+			temp[max_size - 1] = '1';
+			for (int j = 0; j < i; ++j) {
+				nhan_2(temp);
+			}
+			cong_str(num, temp);
+			free(temp);
+		}
+	}
+
+	// Input
+	if (laSoAm)
+		printf("-");
+	int i = 0;
+	while (num[i] == '0') {
+		++i;
+	}
+	printf("%s\n", num + i);
+	free(temp_bits);
+	free(num);
 }

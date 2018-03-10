@@ -34,6 +34,9 @@ void in_QInt(QInt x);
 void in_block(int bits[], int from, int to);
 void int_to_block(int x, int bits[], int from, int to);
 void QInt_to_b128(QInt q, int bits[128]);
-// TODO: chuyen b128 -> so dang string
+// chuyen b128 -> input ban dau
+void cong_str(char *A, char *B);
+void nhan_2(char *num);
+void bit_to_str(int bits[], int size);
 
 #endif

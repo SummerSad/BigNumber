@@ -3,7 +3,7 @@
 
 int main()
 {
-	char num[] = "-10000000000001";
+	char num[] = "-1999999999999999999999999999999";
 	int bits[128];
 	str_to_bit(num, bits, 128);
 	QInt q = b128_to_QInt(bits);
@@ -15,6 +15,8 @@ int main()
 	in_bit(test, 128);
 
 	printf("%d\n", compare_bit(bits, test, 128));
+
+	bit_to_str(bits, 128);
 
 	return 0;
 }
