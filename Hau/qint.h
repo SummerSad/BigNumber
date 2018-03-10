@@ -55,4 +55,7 @@ int nibble_to_uint(bool bits[], int from, int to);
 char *BinToHex(bool *bits);
 char *DecToHex(QInt q);
 
+// Cac ham kiem tra
+void test_input_convert();
+
 #endif
