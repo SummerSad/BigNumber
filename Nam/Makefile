@@ -1,5 +1,5 @@
 CC = g++
-CFLAGS = -Wall -Wextra -g
+CFLAGS = -g -Wall -Wextra -Wshadow
 SRCS = $(wildcard *.cpp)
 
 all:
