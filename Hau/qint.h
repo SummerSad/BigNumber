@@ -64,6 +64,6 @@ bool *cong(bool *bits_1, bool *bits_2, int size);
 
 // Cac ham kiem tra
 void test_input_convert();
-void test_cong();
+void test_cong_tru();
 
 #endif

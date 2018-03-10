@@ -502,6 +502,16 @@ QInt operator+(QInt a, QInt b)
 	return q;
 }
 
+QInt operator-(QInt a, QInt b)
+{
+	// tru la cong voi so doi
+	bool *bits_2 = DecToBin(b);
+	doiDau(bits_2, 128);
+	QInt new_b = BinToDec(bits_2);
+	free(bits_2);
+	return a + new_b;
+}
+
 // Cac ham kiem tra
 void test_input_convert()
 {
@@ -530,11 +540,15 @@ void test_input_convert()
 	free(bits);
 }
 
-void test_cong()
+void test_cong_tru()
 {
 	QInt q_1, q_2;
 	ScanQInt(q_1);
 	ScanQInt(q_2);
+	printf("Tong\n");
 	QInt q_3 = q_1 + q_2;
 	PrintQInt(q_3);
+	printf("Hieu\n");
+	QInt q_4 = q_1 - q_2;
+	PrintQInt(q_4);
 }

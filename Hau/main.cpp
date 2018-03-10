@@ -5,6 +5,6 @@
 int main()
 {
 	// test_input_convert();
-	test_cong();
+	test_cong_tru();
 	return 0;
 }
