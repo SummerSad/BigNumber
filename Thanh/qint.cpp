@@ -4,7 +4,7 @@
 #include <string.h>
 
 // Ham phu tro
-int power2(int i)
+int power_2(int i)
 {
 	if (i == 0) {
 		return 1;
@@ -17,10 +17,10 @@ int power2(int i)
 		printf("2^31 or more is too big\n");
 		return 0;
 	}
-	return 2 * power2(i - 1);
+	return 2 * power_2(i - 1);
 }
 
-void cong1(int bits[], int size)
+void cong_1(int bits[], int size)
 {
 	if (bits[size - 1] == 0) {
 		// 0 + 1 = 1
@@ -42,7 +42,7 @@ void cong1(int bits[], int size)
 	}
 }
 
-void tru1(int bits[], int size)
+void tru_1(int bits[], int size)
 {
 	if (bits[size - 1] == 1) {
 		// 1 - 1 = 0
@@ -64,7 +64,7 @@ void tru1(int bits[], int size)
 	}
 }
 
-void inbit(int bits[], int size)
+void in_bit(int bits[], int size)
 {
 	for (int i = 0; i < size; ++i) {
 		printf("%d", bits[i]);
@@ -86,9 +86,9 @@ void doiDau(int bits[], int size)
 	if (bits[0] == 0) {
 		// so duong
 		nghichDao(bits, size);
-		cong1(bits, size);
+		cong_1(bits, size);
 	} else {
-		tru1(bits, size);
+		tru_1(bits, size);
 		nghichDao(bits, size);
 	}
 }
@@ -115,7 +115,7 @@ int laHopLe(char *num)
 // luu y sau khi chia 2
 // ket qua luon duong
 // dau se luu sau
-void chia2(char *num)
+void chia_2(char *num)
 {
 	char *thuong = (char *)malloc(sizeof(char) * (strlen(num) + 1));
 
@@ -143,7 +143,21 @@ void chia2(char *num)
 	free(thuong);
 }
 
-void strtobit(char *num, int bits[], int size)
+int compare_bit(int b1[], int b2[], int size)
+{
+	for (int i = 0; i < size; ++i) {
+		if (b1[i] != b2[i])
+			return 0;
+	}
+	return 1;
+}
+
+/* Chuyen input -> QInt
+ * cu the, input -> bit[128]
+ * bit[128] chia ra 4 block
+ * moi block dua ve block cua QInt
+ */
+void str_to_bit(char *num, int bits[], int size)
 {
 	if (!laHopLe(num)) {
 		printf("Input khong hop le\n");
@@ -167,7 +181,7 @@ void strtobit(char *num, int bits[], int size)
 		} else {
 			bits[i] = 1;
 		}
-		chia2(temp_num);
+		chia_2(temp_num);
 	}
 
 	if (laSoAm) {
@@ -178,7 +192,7 @@ void strtobit(char *num, int bits[], int size)
 }
 
 // chuyen 1 block (bu 2) sang so nguyen
-int blocktoint(int bits[], int from, int to)
+int block_to_int(int bits[], int from, int to)
 {
 	int size = to - from + 1;
 	if (size != 32) {
@@ -201,19 +215,48 @@ int blocktoint(int bits[], int from, int to)
 	return laSoAm == 0 ? result : -result;
 }
 
-QInt b128toQInt(int bits[128])
+QInt b128_to_QInt(int bits[128])
 {
 	QInt x;
 	for (int i = 0, j = 0; i < 4; ++i, j += 32) {
-		x.block[i] = blocktoint(bits, j, j + 31);
+		x.block[i] = block_to_int(bits, j, j + 31);
 	}
 	return x;
 }
 
-void inQInt(QInt x)
+void in_QInt(QInt x)
 {
 	for (int i = 0; i < 4; ++i) {
 		printf("%d ", x.block[i]);
 	}
 	printf("\n");
+}
+
+/* Chuyen QInt -> input
+ * cu the, doi tung block cua QInt -> bit[128]
+ * bit[128] -> input (so dang string)
+ */
+void in_block(int bits[], int from, int to)
+{
+	in_bit(bits + from, to - from + 1);
+}
+
+void int_to_block(int x, int bits[], int from, int to)
+{
+	int size = to - from + 1;
+	if (size != 32) {
+		printf("Block khong du 32 bit\n");
+		return;
+	}
+	for (int i = to; i >= from; --i) {
+		bits[i] = x & 1;
+		x >>= 1;
+	}
+}
+
+void QInt_to_b128(QInt q, int bits[128])
+{
+	for (int i = 0, y = 0; i < 4; ++i, y += 32) {
+		int_to_block(q.block[i], bits, y, y + 31);
+	}
 }
