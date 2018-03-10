@@ -4,22 +4,6 @@
 #include <string.h>
 
 // Ham phu tro
-int power_2(int i)
-{
-	if (i == 0) {
-		return 1;
-	}
-	if (i < 0) {
-		printf("Don't deal with i < 0\n");
-	}
-	if (i >= 31) {
-		// int range is -2^31 ... 2^31-1
-		printf("2^31 or more is too big\n");
-		return 0;
-	}
-	return 2 * power_2(i - 1);
-}
-
 void cong_1(bool bits[], int size)
 {
 	if (bits[size - 1] == 0) {
@@ -512,6 +496,81 @@ QInt operator-(QInt a, QInt b)
 	return a + new_b;
 }
 
+/* Xu ly toan tu AND (&), OR(|), XOR(^), NOT(~)
+ * dich trai(<<) va dich phai(>>)
+ */
+QInt operator&(QInt a, QInt b)
+{
+	bool *bits_1 = DecToBin(a);
+	bool *bits_2 = DecToBin(b);
+	bool *bits_3 = (bool *)malloc(sizeof(bool) * 128);
+
+	for (int i = 0; i < 128; ++i) {
+		if (bits_1[i] == 1 && bits_2[i] == 1)
+			bits_3[i] = 1;
+		else
+			bits_3[i] = 0;
+	}
+
+	QInt q = BinToDec(bits_3);
+
+	free(bits_1);
+	free(bits_2);
+	free(bits_3);
+	return q;
+}
+
+QInt operator|(QInt a, QInt b)
+{
+	bool *bits_1 = DecToBin(a);
+	bool *bits_2 = DecToBin(b);
+	bool *bits_3 = (bool *)malloc(sizeof(bool) * 128);
+
+	for (int i = 0; i < 128; ++i) {
+		if (bits_1[i] == 0 && bits_2[i] == 0)
+			bits_3[i] = 0;
+		else
+			bits_3[i] = 1;
+	}
+
+	QInt q = BinToDec(bits_3);
+
+	free(bits_1);
+	free(bits_2);
+	free(bits_3);
+	return q;
+}
+
+QInt operator^(QInt a, QInt b)
+{
+	bool *bits_1 = DecToBin(a);
+	bool *bits_2 = DecToBin(b);
+	bool *bits_3 = (bool *)malloc(sizeof(bool) * 128);
+
+	for (int i = 0; i < 128; ++i) {
+		if (bits_1[i] == bits_2[i])
+			bits_3[i] = 0;
+		else
+			bits_3[i] = 1;
+	}
+
+	QInt q = BinToDec(bits_3);
+
+	free(bits_1);
+	free(bits_2);
+	free(bits_3);
+	return q;
+}
+
+QInt operator~(QInt a)
+{
+	bool *bits_1 = DecToBin(a);
+	nghichDao(bits_1, 128);
+	QInt q = BinToDec(bits_1);
+	free(bits_1);
+	return q;
+}
+
 // Cac ham kiem tra
 void test_input_convert()
 {
@@ -551,4 +610,29 @@ void test_cong_tru()
 	printf("Hieu\n");
 	QInt q_4 = q_1 - q_2;
 	PrintQInt(q_4);
+}
+
+void test_bit_operator()
+{
+	QInt q_1, q_2;
+	ScanQInt(q_1);
+	ScanQInt(q_2);
+
+	printf("AND\n");
+	QInt q_3 = q_1 & q_2;
+	PrintQInt(q_3);
+
+	printf("OR\n");
+	QInt q_4 = q_1 | q_2;
+	PrintQInt(q_4);
+
+	printf("XOR\n");
+	QInt q_5 = q_1 ^ q_2;
+	PrintQInt(q_5);
+
+	printf("NOT\n");
+	QInt q_6 = ~q_1;
+	QInt q_7 = ~q_2;
+	PrintQInt(q_6);
+	PrintQInt(q_7);
 }
