@@ -373,7 +373,6 @@ void ScanQInt(QInt &q)
 	bool bits[128];
 	str_to_bit(num, bits, 128);
 	q = b128_to_QInt(bits);
-	// in_QInt(q);
 }
 
 void PrintQInt(QInt q)
@@ -437,4 +436,32 @@ char *DecToHex(QInt q)
 	}
 	free(temp_bits);
 	return BinToHex(bits);
+}
+
+// Cac ham kiem tra
+void test_input_convert()
+{
+	QInt q;
+	ScanQInt(q);
+	PrintQInt(q);
+
+	printf("DecToBin\n");
+	bool *bits = DecToBin(q);
+	in_bit(bits, 128);
+
+	printf("BinToDec\n");
+	QInt q_2 = BinToDec(bits);
+	PrintQInt(q_2);
+
+	printf("BinToHex\n");
+	char *s1 = BinToHex(bits);
+	printf("%s\n", s1);
+	free(s1);
+
+	printf("DecToHex\n");
+	char *s2 = DecToHex(q);
+	printf("%s\n", s2);
+	free(s2);
+
+	free(bits);
 }
