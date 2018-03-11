@@ -204,15 +204,6 @@ int block_to_int(bool bits[], int from, int to)
 	return laSoAm == 0 ? result : -result;
 }
 
-QInt b128_to_QInt(bool bits[128])
-{
-	QInt x;
-	for (int i = 0, j = 0; i < 4; ++i, j += 32) {
-		x.block[i] = block_to_int(bits, j, j + 31);
-	}
-	return x;
-}
-
 void in_QInt(QInt x)
 {
 	for (int i = 0; i < 4; ++i) {
@@ -225,11 +216,6 @@ void in_QInt(QInt x)
  * cu the, doi tung block cua QInt -> bit[128]
  * bit[128] -> input (so dang string)
  */
-void in_block(bool bits[], int from, int to)
-{
-	in_bit(bits + from, to - from + 1);
-}
-
 void int_to_block(int x, bool bits[], int from, int to)
 {
 	int size = to - from + 1;
@@ -379,7 +365,11 @@ bool *DecToBin(QInt q)
 
 QInt BinToDec(bool *bits)
 {
-	return b128_to_QInt(bits);
+	QInt x;
+	for (int i = 0, j = 0; i < 4; ++i, j += 32) {
+		x.block[i] = block_to_int(bits, j, j + 31);
+	}
+	return x;
 }
 
 int nibble_to_uint(bool bits[], int from, int to)
