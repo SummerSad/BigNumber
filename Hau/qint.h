@@ -18,13 +18,13 @@ void nghichDao(bool bits[], int size);
 void doiDau(bool bits[], int size);
 int laChuSo(char c);
 int laHopLe(char *num);
-void chia_2(char *num);
 
 /* Chuyen input -> QInt
  * cu the, input -> bit[128]
  * bit[128] chia ra 4 block
  * moi block dua ve block cua QInt
  */
+void chia_2(char *num);
 void str_to_bit(char *num, bool bits[], int size);
 int block_to_int(bool bits[], int from, int to);
 
@@ -33,7 +33,6 @@ int block_to_int(bool bits[], int from, int to);
  * bit[128] -> input (so dang string)
  */
 void int_to_block(int x, bool bits[], int from, int to);
-void QInt_to_b128(QInt q, bool bits[128]);
 // chuyen b128 -> input ban dau
 void cong_str(char *A, char *B);
 void nhan_2(char *num);

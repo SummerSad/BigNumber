@@ -96,9 +96,13 @@ int laHopLe(char *num)
 	return 1;
 }
 
-// luu y sau khi chia 2
-// ket qua luon duong
-// dau se luu sau
+/* Chuyen input -> QInt
+ * cu the, input -> bit[128]
+ * bit[128] chia ra 4 block
+ * moi block dua ve block cua QInt
+ */
+
+// chia 2 ket qua luon duong
 void chia_2(char *num)
 {
 	char *thuong = (char *)malloc(sizeof(char) * (strlen(num) + 1));
@@ -127,11 +131,6 @@ void chia_2(char *num)
 	free(thuong);
 }
 
-/* Chuyen input -> QInt
- * cu the, input -> bit[128]
- * bit[128] chia ra 4 block
- * moi block dua ve block cua QInt
- */
 void str_to_bit(char *num, bool bits[], int size)
 {
 	if (!laHopLe(num)) {
