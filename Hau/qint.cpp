@@ -127,15 +127,6 @@ void chia_2(char *num)
 	free(thuong);
 }
 
-int compare_bit(bool b1[], bool b2[], int size)
-{
-	for (int i = 0; i < size; ++i) {
-		if (b1[i] != b2[i])
-			return 0;
-	}
-	return 1;
-}
-
 /* Chuyen input -> QInt
  * cu the, input -> bit[128]
  * bit[128] chia ra 4 block
@@ -607,6 +598,7 @@ QInt operator>>(QInt a, int count)
 // Cac ham kiem tra
 void test_input_convert()
 {
+	printf("Test input output\n");
 	QInt q;
 	ScanQInt(q);
 	PrintQInt(q);
@@ -634,6 +626,7 @@ void test_input_convert()
 
 void test_cong_tru()
 {
+	printf("Test cong tru\n");
 	QInt q_1, q_2;
 	ScanQInt(q_1);
 	ScanQInt(q_2);
@@ -647,6 +640,7 @@ void test_cong_tru()
 
 void test_bit_operator()
 {
+	printf("Test bit operator\n");
 	QInt q_1, q_2;
 	ScanQInt(q_1);
 	ScanQInt(q_2);

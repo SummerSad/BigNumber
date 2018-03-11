@@ -19,7 +19,6 @@ void doiDau(bool bits[], int size);
 int laChuSo(char c);
 int laHopLe(char *num);
 void chia_2(char *num);
-int compare_bit(bool b1[], bool b2[], int size);
 
 /* Chuyen input -> QInt
  * cu the, input -> bit[128]
