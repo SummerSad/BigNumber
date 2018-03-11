@@ -1,6 +1,6 @@
 /* So nguyen lon 128-bit
  * bieu dien tu -2^127 den 2^127 - 1
- * YEAUCAU ham yeu cau tu do an
+ * YEUCAU ham yeu cau tu do an
  * TODO ke hoach can lam
  */
 #ifndef QINT_INCLUDED
