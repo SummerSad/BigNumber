@@ -1,6 +1,6 @@
 /* So nguyen lon 128-bit
  * bieu dien tu -2^127 den 2^127 - 1
- * YEAUCAU ham yeu cau tu do an
+ * YEUCAU ham yeu cau tu do an
  * TODO ke hoach can lam
  */
 #ifndef QINT_INCLUDED
@@ -65,12 +65,14 @@ QInt operator-(QInt a, QInt b);
 // TODO: nhan bang booth
 
 /* YEUCAUL Xu ly toan tu AND (&), OR(|), XOR(^), NOT(~)
- * dich trai(<<) va dich phai(>>)
+ * dich trai va dich phai
  */
 QInt operator&(QInt a, QInt b);
 QInt operator|(QInt a, QInt b);
 QInt operator^(QInt a, QInt b);
 QInt operator~(QInt a);
+QInt operator<<(QInt a, int count);
+QInt operator>>(QInt a, int count);
 
 // Cac ham kiem tra
 void test_input_convert();
