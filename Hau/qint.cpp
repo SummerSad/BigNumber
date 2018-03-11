@@ -212,13 +212,6 @@ void int_to_block(int x, bool bits[], int from, int to)
 	}
 }
 
-void QInt_to_b128(QInt q, bool bits[128])
-{
-	for (int i = 0, y = 0; i < 4; ++i, y += 32) {
-		int_to_block(q.block[i], bits, y, y + 31);
-	}
-}
-
 // A = A + B (10-digits, A va B > 0)
 void cong_str(char *A, char *B)
 {
@@ -332,10 +325,10 @@ void ScanQInt(QInt &q)
 
 void PrintQInt(QInt q)
 {
-	bool bits[128];
-	QInt_to_b128(q, bits);
+	bool *bits = DecToBin(q);
 	printf("Xuat so nguyen lon: ");
 	bit_to_str(bits, 128);
+	free(bits);
 }
 
 // Chuyen doi theo YEUCAU, mac dinh bits la 128
