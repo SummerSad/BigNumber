@@ -65,12 +65,14 @@ QInt operator-(QInt a, QInt b);
 // TODO: nhan bang booth
 
 /* YEUCAUL Xu ly toan tu AND (&), OR(|), XOR(^), NOT(~)
- * dich trai(<<) va dich phai(>>)
+ * dich trai va dich phai
  */
 QInt operator&(QInt a, QInt b);
 QInt operator|(QInt a, QInt b);
 QInt operator^(QInt a, QInt b);
 QInt operator~(QInt a);
+QInt operator<<(QInt a, int count);
+QInt operator>>(QInt a, int count);
 
 // Cac ham kiem tra
 void test_input_convert();

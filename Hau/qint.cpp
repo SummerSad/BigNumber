@@ -358,7 +358,7 @@ void ScanQInt(QInt &q)
 	scanf("%s", num);
 	bool bits[128];
 	str_to_bit(num, bits, 128);
-	q = b128_to_QInt(bits);
+	q = BinToDec(bits);
 }
 
 void PrintQInt(QInt q)
@@ -571,6 +571,55 @@ QInt operator~(QInt a)
 	return q;
 }
 
+// Dich trai luon them so 0
+QInt operator<<(QInt a, int count)
+{
+	bool *bits = DecToBin(a);
+	if (count < 1) {
+		printf("Dich trai, count < 1\n");
+	} else if (count >= 128) {
+		for (int i = 0; i < 128; ++i) {
+			bits[i] = 0;
+		}
+	} else {
+		for (int i = 0; i < count; ++i) {
+			for (int j = 0; j < 127; ++j) {
+				bits[j] = bits[j + 1];
+			}
+			bits[127] = 0;
+		}
+	}
+	QInt q = BinToDec(bits);
+	free(bits);
+	return q;
+}
+
+// Dich phai them so 0 (so duong) hoac 1 (so am)
+QInt operator>>(QInt a, int count)
+{
+	bool *bits = DecToBin(a);
+	int laSoAm = 0;
+	if (bits[0] == 1)
+		laSoAm = 1;
+	if (count < 0) {
+		printf("Dich phai, count < 1\n");
+	} else if (count >= 128) {
+		for (int i = 0; i < 128; ++i) {
+			bits[i] = laSoAm;
+		}
+	} else {
+		for (int i = 0; i < count; ++i) {
+			for (int j = 127; j > 0; --j) {
+				bits[j] = bits[j - 1];
+			}
+			bits[0] = laSoAm;
+		}
+	}
+	QInt q = BinToDec(bits);
+	free(bits);
+	return q;
+}
+
 // Cac ham kiem tra
 void test_input_convert()
 {
@@ -635,4 +684,16 @@ void test_bit_operator()
 	QInt q_7 = ~q_2;
 	PrintQInt(q_6);
 	PrintQInt(q_7);
+
+	printf("Left Shift\n");
+	QInt q_8 = q_1 << 1;
+	QInt q_9 = q_2 << 2;
+	PrintQInt(q_8);
+	PrintQInt(q_9);
+
+	printf("Right Shift\n");
+	QInt q_10 = q_1 >> 1;
+	QInt q_11 = q_2 >> 2;
+	PrintQInt(q_10);
+	PrintQInt(q_11);
 }
