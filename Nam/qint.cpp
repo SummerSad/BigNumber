@@ -96,9 +96,13 @@ int laHopLe(char *num)
 	return 1;
 }
 
-// luu y sau khi chia 2
-// ket qua luon duong
-// dau se luu sau
+/* Chuyen input -> QInt
+ * cu the, input -> bit[128]
+ * bit[128] chia ra 4 block
+ * moi block dua ve block cua QInt
+ */
+
+// chia 2 ket qua luon duong
 void chia_2(char *num)
 {
 	char *thuong = (char *)malloc(sizeof(char) * (strlen(num) + 1));
@@ -127,20 +131,6 @@ void chia_2(char *num)
 	free(thuong);
 }
 
-int compare_bit(bool b1[], bool b2[], int size)
-{
-	for (int i = 0; i < size; ++i) {
-		if (b1[i] != b2[i])
-			return 0;
-	}
-	return 1;
-}
-
-/* Chuyen input -> QInt
- * cu the, input -> bit[128]
- * bit[128] chia ra 4 block
- * moi block dua ve block cua QInt
- */
 void str_to_bit(char *num, bool bits[], int size)
 {
 	if (!laHopLe(num)) {
@@ -204,32 +194,10 @@ int block_to_int(bool bits[], int from, int to)
 	return laSoAm == 0 ? result : -result;
 }
 
-QInt b128_to_QInt(bool bits[128])
-{
-	QInt x;
-	for (int i = 0, j = 0; i < 4; ++i, j += 32) {
-		x.block[i] = block_to_int(bits, j, j + 31);
-	}
-	return x;
-}
-
-void in_QInt(QInt x)
-{
-	for (int i = 0; i < 4; ++i) {
-		printf("%d ", x.block[i]);
-	}
-	printf("\n");
-}
-
 /* Chuyen QInt -> input
  * cu the, doi tung block cua QInt -> bit[128]
  * bit[128] -> input (so dang string)
  */
-void in_block(bool bits[], int from, int to)
-{
-	in_bit(bits + from, to - from + 1);
-}
-
 void int_to_block(int x, bool bits[], int from, int to)
 {
 	int size = to - from + 1;
@@ -240,13 +208,6 @@ void int_to_block(int x, bool bits[], int from, int to)
 	for (int i = to; i >= from; --i) {
 		bits[i] = x & 1;
 		x >>= 1;
-	}
-}
-
-void QInt_to_b128(QInt q, bool bits[128])
-{
-	for (int i = 0, y = 0; i < 4; ++i, y += 32) {
-		int_to_block(q.block[i], bits, y, y + 31);
 	}
 }
 
@@ -363,23 +324,29 @@ void ScanQInt(QInt &q)
 
 void PrintQInt(QInt q)
 {
-	bool bits[128];
-	QInt_to_b128(q, bits);
+	bool *bits = DecToBin(q);
 	printf("Xuat so nguyen lon: ");
 	bit_to_str(bits, 128);
+	free(bits);
 }
 
 // Chuyen doi theo YEUCAU, mac dinh bits la 128
 bool *DecToBin(QInt q)
 {
 	bool *bits = (bool *)malloc(sizeof(bool) * 128);
-	QInt_to_b128(q, bits);
+	for (int i = 0, y = 0; i < 4; ++i, y += 32) {
+		int_to_block(q.block[i], bits, y, y + 31);
+	}
 	return bits;
 }
 
 QInt BinToDec(bool *bits)
 {
-	return b128_to_QInt(bits);
+	QInt x;
+	for (int i = 0, j = 0; i < 4; ++i, j += 32) {
+		x.block[i] = block_to_int(bits, j, j + 31);
+	}
+	return x;
 }
 
 int nibble_to_uint(bool bits[], int from, int to)
@@ -623,6 +590,7 @@ QInt operator>>(QInt a, int count)
 // Cac ham kiem tra
 void test_input_convert()
 {
+	printf("Test input output\n");
 	QInt q;
 	ScanQInt(q);
 	PrintQInt(q);
@@ -650,6 +618,7 @@ void test_input_convert()
 
 void test_cong_tru()
 {
+	printf("Test cong tru\n");
 	QInt q_1, q_2;
 	ScanQInt(q_1);
 	ScanQInt(q_2);
@@ -663,6 +632,7 @@ void test_cong_tru()
 
 void test_bit_operator()
 {
+	printf("Test bit operator\n");
 	QInt q_1, q_2;
 	ScanQInt(q_1);
 	ScanQInt(q_2);
