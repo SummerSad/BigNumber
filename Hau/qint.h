@@ -28,7 +28,6 @@ int compare_bit(bool b1[], bool b2[], int size);
  */
 void str_to_bit(char *num, bool bits[], int size);
 int block_to_int(bool bits[], int from, int to);
-void in_QInt(QInt x);
 
 /* Chuyen QInt -> input
  * cu the, doi tung block cua QInt -> bit[128]

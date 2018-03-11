@@ -204,14 +204,6 @@ int block_to_int(bool bits[], int from, int to)
 	return laSoAm == 0 ? result : -result;
 }
 
-void in_QInt(QInt x)
-{
-	for (int i = 0; i < 4; ++i) {
-		printf("%d ", x.block[i]);
-	}
-	printf("\n");
-}
-
 /* Chuyen QInt -> input
  * cu the, doi tung block cua QInt -> bit[128]
  * bit[128] -> input (so dang string)
@@ -359,7 +351,9 @@ void PrintQInt(QInt q)
 bool *DecToBin(QInt q)
 {
 	bool *bits = (bool *)malloc(sizeof(bool) * 128);
-	QInt_to_b128(q, bits);
+	for (int i = 0, y = 0; i < 4; ++i, y += 32) {
+		int_to_block(q.block[i], bits, y, y + 31);
+	}
 	return bits;
 }
 
