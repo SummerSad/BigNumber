@@ -323,8 +323,8 @@ void bit_to_str(bool bits[], int size)
 			char *temp =
 			    (char *)malloc(sizeof(char) * (max_size + 1));
 			temp[max_size] = '\0';
-			for (int i = 0; i < max_size - 1; ++i) {
-				temp[i] = '0';
+			for (int j = 0; j < max_size - 1; ++j) {
+				temp[j] = '0';
 			}
 			temp[max_size - 1] = '1';
 			for (int j = 0; j < i; ++j) {
