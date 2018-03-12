@@ -102,7 +102,7 @@ int laHopLe(char *num)
  * moi block dua ve block cua QInt
  */
 
-// chia 2 ket qua luon duong
+// so dang string chia 2 (ket qua > 0)
 void chia_2(char *num)
 {
 	char *thuong = (char *)malloc(sizeof(char) * (strlen(num) + 1));
@@ -349,11 +349,11 @@ QInt BinToDec(bool *bits)
 	return x;
 }
 
+// nibble la 4 bit nhu 0101
 int nibble_to_uint(bool bits[], int from, int to)
 {
 	int size = to - from + 1;
 	if (size != 4) {
-		printf("Khong phai nibble \n");
 		return 0;
 	}
 
@@ -400,12 +400,6 @@ QInt operator+(QInt a, QInt b)
 {
 	bool *bits_1 = DecToBin(a);
 	bool *bits_2 = DecToBin(b);
-	bool laSoAm_1 = 0;
-	if (bits_1[0] == 1)
-		laSoAm_1 = 1;
-	bool laSoAm_2 = 0;
-	if (bits_2[0] == 1)
-		laSoAm_2 = 1;
 	const int size = 128;
 	bool *tong = (bool *)malloc(sizeof(bool) * (size));
 	int rememberNumber = 0; // 1 + 1 = 0 remember 1
@@ -432,14 +426,6 @@ QInt operator+(QInt a, QInt b)
 			}
 		}
 	}
-	if (laSoAm_1 && laSoAm_2) {
-		if (tong[0] == 0)
-			printf("am + am = duong, tran so\n");
-	}
-	if (!laSoAm_1 && !laSoAm_2) {
-		if (tong[0] == 1)
-			printf("duong + duong = am, tran so\n");
-	}
 	QInt q = BinToDec(tong);
 	free(bits_1);
 	free(bits_2);
@@ -455,6 +441,51 @@ QInt operator-(QInt a, QInt b)
 	QInt new_b = BinToDec(bits_2);
 	free(bits_2);
 	return a + new_b;
+}
+
+// nhan bang thuat toan booth
+// A  Q  Q0  M
+// 0  a  0   .
+QInt operator*(QInt a, QInt M)
+{
+	const int size = 128;
+	bool *bits_Q = DecToBin(a);
+	bool *bits_A = (bool *)malloc(sizeof(bool) * (size));
+	for (int i = 0; i < size; ++i) {
+		bits_A[i] = 0;
+	}
+	bool bit_Q0 = 0;
+
+	// 128 step
+	for (int i = 0; i < size; ++i) {
+		if (bits_Q[size - 1] != bit_Q0) {
+			QInt A = BinToDec(bits_A);
+			if (bits_Q[size - 1] == 1 && bit_Q0 == 0) {
+				A = A - M;
+			} else {
+				A = A + M;
+			}
+			bool *bits_temp = DecToBin(A);
+			for (int j = 0; j < size; ++j) {
+				bits_A[j] = bits_temp[j];
+			}
+			free(bits_temp);
+		}
+		// dich bit
+		bool last_A = bits_A[size - 1];
+		bit_Q0 = bits_Q[size - 1];
+		for (int j = size - 1; j > 0; --j) {
+			bits_A[j] = bits_A[j - 1];
+			bits_Q[j] = bits_Q[j - 1];
+		}
+		bits_Q[0] = last_A;
+	}
+        // Ket qua cuoi cung la day bit A va Q ket hop lai
+        // nhung bo di A vi overflow
+	QInt q = BinToDec(bits_Q);
+	free(bits_Q);
+	free(bits_A);
+	return q;
 }
 
 /* Xu ly toan tu AND (&), OR(|), XOR(^), NOT(~)
@@ -536,9 +567,7 @@ QInt operator~(QInt a)
 QInt operator<<(QInt a, int count)
 {
 	bool *bits = DecToBin(a);
-	if (count < 1) {
-		printf("Dich trai, count < 1\n");
-	} else if (count >= 128) {
+	if (count >= 128) {
 		for (int i = 0; i < 128; ++i) {
 			bits[i] = 0;
 		}
@@ -555,25 +584,19 @@ QInt operator<<(QInt a, int count)
 	return q;
 }
 
-// Dich phai them so 0 (so duong) hoac 1 (so am)
+// Dich phai them bit dau tien (0 hoac 1)
 QInt operator>>(QInt a, int count)
 {
 	bool *bits = DecToBin(a);
-	int laSoAm = 0;
-	if (bits[0] == 1)
-		laSoAm = 1;
-	if (count < 0) {
-		printf("Dich phai, count < 1\n");
-	} else if (count >= 128) {
-		for (int i = 0; i < 128; ++i) {
-			bits[i] = laSoAm;
+	if (count >= 128) {
+		for (int i = 1; i < 128; ++i) {
+			bits[i] = bits[0];
 		}
 	} else {
 		for (int i = 0; i < count; ++i) {
 			for (int j = 127; j > 0; --j) {
 				bits[j] = bits[j - 1];
 			}
-			bits[0] = laSoAm;
 		}
 	}
 	QInt q = BinToDec(bits);
@@ -622,6 +645,17 @@ void test_cong_tru()
 	printf("Hieu\n");
 	QInt q_4 = q_1 - q_2;
 	PrintQInt(q_4);
+}
+
+void test_nhan_chia()
+{
+	printf("Test nhan chia\n");
+	QInt q_1, q_2;
+	ScanQInt(q_1);
+	ScanQInt(q_2);
+	printf("Tich\n");
+	QInt q_3 = q_1 * q_2;
+	PrintQInt(q_3);
 }
 
 void test_bit_operator()
