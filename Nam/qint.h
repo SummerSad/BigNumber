@@ -2,6 +2,7 @@
  * bieu dien tu -2^127 den 2^127 - 1
  * YEUCAU ham yeu cau tu do an
  * TODO ke hoach can lam
+ * "If it ain't broke, don't fix it"
  */
 #ifndef QINT_INCLUDED
 #define QINT_INCLUDED
@@ -33,7 +34,6 @@ int block_to_int(bool bits[], int from, int to);
  * bit[128] -> input (so dang string)
  */
 void int_to_block(int x, bool bits[], int from, int to);
-// chuyen b128 -> input ban dau
 void cong_str(char *A, char *B);
 void nhan_2(char *num);
 void bit_to_str(bool bits[], int size);
@@ -54,7 +54,6 @@ char *DecToHex(QInt q);
  * tru la nguoc lai cua cong
  * nhan su dung booth
  */
-bool *cong(bool *bits_1, bool *bits_2, int size);
 QInt operator+(QInt a, QInt b);
 QInt operator-(QInt a, QInt b);
 // TODO: nhan bang booth

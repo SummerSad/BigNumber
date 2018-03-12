@@ -396,15 +396,17 @@ char *DecToHex(QInt q)
  * tru la nguoc lai cua cong
  * nhan su dung booth
  */
-bool *cong(bool *bits_1, bool *bits_2, int size)
+QInt operator+(QInt a, QInt b)
 {
+	bool *bits_1 = DecToBin(a);
+	bool *bits_2 = DecToBin(b);
 	bool laSoAm_1 = 0;
 	if (bits_1[0] == 1)
 		laSoAm_1 = 1;
 	bool laSoAm_2 = 0;
 	if (bits_2[0] == 1)
 		laSoAm_2 = 1;
-
+	const int size = 128;
 	bool *tong = (bool *)malloc(sizeof(bool) * (size));
 	int rememberNumber = 0; // 1 + 1 = 0 remember 1
 	for (int i = size - 1; i >= 0; --i) {
@@ -438,14 +440,6 @@ bool *cong(bool *bits_1, bool *bits_2, int size)
 		if (tong[0] == 1)
 			printf("duong + duong = am, tran so\n");
 	}
-	return tong;
-}
-
-QInt operator+(QInt a, QInt b)
-{
-	bool *bits_1 = DecToBin(a);
-	bool *bits_2 = DecToBin(b);
-	bool *tong = cong(bits_1, bits_2, 128);
 	QInt q = BinToDec(tong);
 	free(bits_1);
 	free(bits_2);
