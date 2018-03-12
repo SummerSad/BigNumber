@@ -26,7 +26,7 @@ int laHopLe(char *num);
  * moi block dua ve block cua QInt
  */
 void chia_2(char *num);
-void str_to_bit(char *num, bool bits[], int size);
+bool *str10_to_bit(char *num);
 int block_to_int(bool bits[], int from, int to);
 
 /* Chuyen QInt -> input
@@ -36,7 +36,7 @@ int block_to_int(bool bits[], int from, int to);
 void int_to_block(int x, bool bits[], int from, int to);
 void cong_str(char *A, char *B);
 void nhan_2(char *num);
-void bit_to_str(bool bits[], int size);
+char *bit_to_str10(bool bits[], int size);
 
 // YEUCAU: Nhap xuat
 void ScanQInt(QInt &q);

@@ -102,7 +102,7 @@ int laHopLe(char *num)
  * moi block dua ve block cua QInt
  */
 
-// so dang string chia 2 (ket qua > 0)
+// so string 10-digits chia 2 (ket qua > 0)
 void chia_2(char *num)
 {
 	char *thuong = (char *)malloc(sizeof(char) * (strlen(num) + 1));
@@ -131,19 +131,22 @@ void chia_2(char *num)
 	free(thuong);
 }
 
-void str_to_bit(char *num, bool bits[], int size)
+// Doi string 10-digits ra bits[128]
+bool *str10_to_bit(char *num)
 {
+	const int size = 128;
+	bool *bits = (bool *)malloc(sizeof(bool) * size);
 	if (!laHopLe(num)) {
 		printf("Input khong hop le\n");
 		for (int i = 0; i < size; ++i) {
 			bits[i] = 0;
 		}
-		return;
+		return bits;
 	}
+
 	char *temp_num = (char *)malloc(sizeof(char) * (strlen(num) + 1));
 	temp_num[strlen(num)] = '\0';
 	strcpy(temp_num, num);
-
 	int i = 0;
 	int laSoAm = 0;
 	if (temp_num[i] == '-' || temp_num[i] == '+') {
@@ -153,7 +156,7 @@ void str_to_bit(char *num, bool bits[], int size)
 		++i;
 	}
 
-	for (i = 127; i >= 0; --i) {
+	for (i = size - 1; i >= 0; --i) {
 		if ((temp_num[strlen(temp_num) - 1] - '0') % 2 == 0) {
 			bits[i] = 0;
 		} else {
@@ -161,12 +164,11 @@ void str_to_bit(char *num, bool bits[], int size)
 		}
 		chia_2(temp_num);
 	}
-
 	if (laSoAm) {
 		doiDau(bits, size);
 	}
-
 	free(temp_num);
+	return bits;
 }
 
 // chuyen 1 block (bu 2) sang so nguyen
@@ -235,9 +237,9 @@ void nhan_2(char *num)
 	}
 	int d = 0;
 	for (int i = strlen(num) - 1; i >= 0; --i) {
-		int mult = (num[i] - '0') * 2 + d;
-		num[i] = mult % 10 + '0';
-		d = mult / 10;
+		int multi = (num[i] - '0') * 2 + d;
+		num[i] = multi % 10 + '0';
+		d = multi / 10;
 	}
 }
 
@@ -246,19 +248,14 @@ void nhan_2(char *num)
  * so 1 dau tien la 2^0 -> cong vao num
  * so 1 cuoi cung la 2^2 -> cong vao num
  */
-void bit_to_str(bool bits[], int size)
+char *bit_to_str10(bool bits[], int size)
 {
-	if (size > 128) {
-		printf("Day bit lon hon 128, bo qua\n");
-		return;
-	}
-
 	// Kiem tra so am
 	bool *temp_bits = (bool *)malloc(sizeof(int) * size);
 	for (int i = 0; i < size; ++i) {
 		temp_bits[i] = bits[i];
 	}
-	int laSoAm = 0;
+	bool laSoAm = 0;
 	if (temp_bits[0] == 1) {
 		laSoAm = 1;
 		doiDau(temp_bits, size);
@@ -278,8 +275,8 @@ void bit_to_str(bool bits[], int size)
 	}
 
 	// temp_bits[] -> num
-	for (int i = 0; i < 128; ++i) {
-		if (temp_bits[127 - i] == 1) {
+	for (int i = 0; i < size; ++i) {
+		if (temp_bits[size - 1 - i] == 1) {
 			// lay 2^i
 			char *temp =
 			    (char *)malloc(sizeof(char) * (max_size + 1));
@@ -296,18 +293,20 @@ void bit_to_str(bool bits[], int size)
 		}
 	}
 
-	// Input
-	if (laSoAm)
-		printf("-");
+	free(temp_bits);
 	int i = 0;
-	while (num[i] == '0') {
+	while (num[i] == '0')
 		++i;
-	}
 	if (i == max_size)
 		--i;
-	printf("%s\n", num + i);
-	free(temp_bits);
+	int new_size = size - i + laSoAm;
+	char *new_num = (char *)malloc(sizeof(char) * (new_size + 1));
+	new_num[new_size] = '\0';
+	if (laSoAm)
+		new_num[0] = '-';
+	strcpy(new_num + laSoAm, num + i);
 	free(num);
+	return new_num;
 }
 
 // Nhap xuat theo YEUCAU
@@ -317,17 +316,19 @@ void ScanQInt(QInt &q)
 	char num[max_size + 1];
 	printf("Nhap so nguyen lon: ");
 	scanf("%s", num);
-	bool bits[128];
-	str_to_bit(num, bits, 128);
+	bool *bits = str10_to_bit(num);
 	q = BinToDec(bits);
+	free(bits);
 }
 
 void PrintQInt(QInt q)
 {
 	bool *bits = DecToBin(q);
 	printf("Xuat so nguyen lon: ");
-	bit_to_str(bits, 128);
+	char *str10 = bit_to_str10(bits, 128);
+	printf("%s\n", str10);
 	free(bits);
+	free(str10);
 }
 
 // Chuyen doi theo YEUCAU, mac dinh bits la 128
@@ -480,8 +481,8 @@ QInt operator*(QInt a, QInt M)
 		}
 		bits_Q[0] = last_A;
 	}
-        // Ket qua cuoi cung la day bit A va Q ket hop lai
-        // nhung bo di A vi overflow
+	// Ket qua cuoi cung la day bit A va Q ket hop lai
+	// nhung bo di A vi overflow
 	QInt q = BinToDec(bits_Q);
 	free(bits_Q);
 	free(bits_A);
