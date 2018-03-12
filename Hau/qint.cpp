@@ -276,7 +276,7 @@ char *bit_to_str10(bool bits[], int size)
 
 	// temp_bits[] -> num
 	for (int i = 0; i < size; ++i) {
-		if (temp_bits[size - i] == 1) {
+		if (temp_bits[size - 1 - i] == 1) {
 			// lay 2^i
 			char *temp =
 			    (char *)malloc(sizeof(char) * (max_size + 1));
