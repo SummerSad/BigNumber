@@ -12,11 +12,11 @@ struct QInt {
 };
 
 // Ham phu tro
-void cong_1(bool bits[], int size);
-void tru_1(bool bits[], int size);
-void in_bit(bool bits[], int size);
-void nghichDao(bool bits[], int size);
-void doiDau(bool bits[], int size);
+void cong_1(bool *bits, int size);
+void tru_1(bool *bits, int size);
+void in_bit(bool *bits, int size);
+void nghichDao(bool *bits, int size);
+void doiDau(bool *bits, int size);
 int laChuSo(char c);
 int laHopLe(char *num);
 
@@ -25,18 +25,22 @@ int laHopLe(char *num);
  * bit[128] chia ra 4 block
  * moi block dua ve block cua QInt
  */
+int block_to_int(bool *bits, int from, int to);
 void chia_2(char *num);
 bool *str10_to_bit(char *num);
-int block_to_int(bool bits[], int from, int to);
+// TODO chuyen string dang 2-digits ve bit
+bool *str2_to_bit(char *num);
 
 /* Chuyen QInt -> input
  * cu the, doi tung block cua QInt -> bit[128]
  * bit[128] -> input (so dang string)
  */
-void int_to_block(int x, bool bits[], int from, int to);
+void int_to_block(int x, bool *bits, int from, int to);
 void cong_str(char *A, char *B);
 void nhan_2(char *num);
-char *bit_to_str10(bool bits[], int size);
+char *bit_to_str10(bool *bits, int size);
+// TODO chuyen bit ve dang string 2-digits
+char *bit_to_str2(bool *bit, int size);
 
 // YEUCAU: Nhap xuat
 void ScanQInt(QInt &q);
@@ -45,9 +49,11 @@ void PrintQInt(QInt q);
 // YEUCAU: Chuyen doi, mac dinh bits la 128
 bool *DecToBin(QInt q);
 QInt BinToDec(bool *bits);
-int nibble_to_uint(bool bits[], int from, int to);
+int nibble_to_uint(bool *bits, int from, int to);
 char *BinToHex(bool *bits);
 char *DecToHex(QInt q);
+// TODO chuyen hexa -> QInt
+QInt HexToDec(char *);
 
 /* YEUCAU: Xu ly toan tu + - * /
  * tran so cua cong: am + am = duong va duong + duong = am
@@ -56,8 +62,8 @@ char *DecToHex(QInt q);
  */
 QInt operator+(QInt a, QInt b);
 QInt operator-(QInt a, QInt b);
-// TODO: nhan bang booth
 QInt operator*(QInt a, QInt M);
+// TODO phep chia
 
 /* YEUCAUL Xu ly toan tu AND (&), OR(|), XOR(^), NOT(~)
  * dich trai va dich phai

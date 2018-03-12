@@ -4,7 +4,7 @@
 #include <string.h>
 
 // Ham phu tro
-void cong_1(bool bits[], int size)
+void cong_1(bool *bits, int size)
 {
 	if (bits[size - 1] == 0) {
 		// 0 + 1 = 1
@@ -26,7 +26,7 @@ void cong_1(bool bits[], int size)
 	}
 }
 
-void tru_1(bool bits[], int size)
+void tru_1(bool *bits, int size)
 {
 	if (bits[size - 1] == 1) {
 		// 1 - 1 = 0
@@ -48,7 +48,7 @@ void tru_1(bool bits[], int size)
 	}
 }
 
-void in_bit(bool bits[], int size)
+void in_bit(bool *bits, int size)
 {
 	for (int i = 0; i < size; ++i) {
 		printf("%d", bits[i]);
@@ -57,7 +57,7 @@ void in_bit(bool bits[], int size)
 }
 
 // 101 -> 010
-void nghichDao(bool bits[], int size)
+void nghichDao(bool *bits, int size)
 {
 	for (int i = 0; i < size; ++i) {
 		bits[i] = 1 - bits[i];
@@ -65,7 +65,7 @@ void nghichDao(bool bits[], int size)
 }
 
 // am -> duong va nguoc lai (bu 2)
-void doiDau(bool bits[], int size)
+void doiDau(bool *bits, int size)
 {
 	if (bits[0] == 0) {
 		// so duong
@@ -172,7 +172,7 @@ bool *str10_to_bit(char *num)
 }
 
 // chuyen 1 block (bu 2) sang so nguyen
-int block_to_int(bool bits[], int from, int to)
+int block_to_int(bool *bits, int from, int to)
 {
 	int size = to - from + 1;
 	if (size != 32) {
@@ -200,7 +200,7 @@ int block_to_int(bool bits[], int from, int to)
  * cu the, doi tung block cua QInt -> bit[128]
  * bit[128] -> input (so dang string)
  */
-void int_to_block(int x, bool bits[], int from, int to)
+void int_to_block(int x, bool *bits, int from, int to)
 {
 	int size = to - from + 1;
 	if (size != 32) {
@@ -248,7 +248,7 @@ void nhan_2(char *num)
  * so 1 dau tien la 2^0 -> cong vao num
  * so 1 cuoi cung la 2^2 -> cong vao num
  */
-char *bit_to_str10(bool bits[], int size)
+char *bit_to_str10(bool *bits, int size)
 {
 	// Kiem tra so am
 	bool *temp_bits = (bool *)malloc(sizeof(int) * size);
@@ -351,7 +351,7 @@ QInt BinToDec(bool *bits)
 }
 
 // nibble la 4 bit nhu 0101
-int nibble_to_uint(bool bits[], int from, int to)
+int nibble_to_uint(bool *bits, int from, int to)
 {
 	int size = to - from + 1;
 	if (size != 4) {
