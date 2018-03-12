@@ -57,6 +57,7 @@ char *DecToHex(QInt q);
 QInt operator+(QInt a, QInt b);
 QInt operator-(QInt a, QInt b);
 // TODO: nhan bang booth
+QInt operator*(QInt a, QInt M);
 
 /* YEUCAUL Xu ly toan tu AND (&), OR(|), XOR(^), NOT(~)
  * dich trai va dich phai
@@ -71,6 +72,7 @@ QInt operator>>(QInt a, int count);
 // Cac ham kiem tra
 void test_input_convert();
 void test_cong_tru();
+void test_nhan_chia();
 void test_bit_operator();
 
 #endif
