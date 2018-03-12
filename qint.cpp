@@ -564,20 +564,35 @@ QInt operator~(QInt a)
 	return q;
 }
 
-// Dich trai luon them so 0
+/* Dich sang trai, phai dung 1 bit
+ * Dich trai luon them so 0
+ * Dich phai them bit dau tien (0 hoac 1)
+ */
+void dich_trai_1(bool *bits, int size)
+{
+	for (int i = 0; i < size - 1; ++i) {
+		bits[i] = bits[i + 1];
+	}
+	bits[size - 1] = 0;
+}
+void dich_phai_1(bool *bits, int size)
+{
+	for (int i = size - 1; i > 0; --i) {
+		bits[i] = bits[i - 1];
+	}
+}
+
 QInt operator<<(QInt a, int count)
 {
+	const int size = 128;
 	bool *bits = DecToBin(a);
-	if (count >= 128) {
-		for (int i = 0; i < 128; ++i) {
+	if (count >= size) {
+		for (int i = 0; i < size; ++i) {
 			bits[i] = 0;
 		}
 	} else {
 		for (int i = 0; i < count; ++i) {
-			for (int j = 0; j < 127; ++j) {
-				bits[j] = bits[j + 1];
-			}
-			bits[127] = 0;
+			dich_trai_1(bits, size);
 		}
 	}
 	QInt q = BinToDec(bits);
@@ -585,19 +600,17 @@ QInt operator<<(QInt a, int count)
 	return q;
 }
 
-// Dich phai them bit dau tien (0 hoac 1)
 QInt operator>>(QInt a, int count)
 {
+	const int size = 128;
 	bool *bits = DecToBin(a);
-	if (count >= 128) {
-		for (int i = 1; i < 128; ++i) {
+	if (count >= size) {
+		for (int i = 1; i < size; ++i) {
 			bits[i] = bits[0];
 		}
 	} else {
 		for (int i = 0; i < count; ++i) {
-			for (int j = 127; j > 0; --j) {
-				bits[j] = bits[j - 1];
-			}
+			dich_phai_1(bits, size);
 		}
 	}
 	QInt q = BinToDec(bits);

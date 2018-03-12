@@ -66,6 +66,8 @@ QInt operator&(QInt a, QInt b);
 QInt operator|(QInt a, QInt b);
 QInt operator^(QInt a, QInt b);
 QInt operator~(QInt a);
+void dich_trai_1(bool *bits, int size);
+void dich_phai_1(bool *bits, int size);
 QInt operator<<(QInt a, int count);
 QInt operator>>(QInt a, int count);
 
