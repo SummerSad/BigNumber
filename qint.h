@@ -14,32 +14,34 @@ struct QInt {
 const int QInt_Size = 128;
 
 // Ham phu tro
-void cong_1(bool *bits, int size);
-void tru_1(bool *bits, int size);
+void cong_1_bit(bool *bits, int size);
+void tru_1_bit(bool *bits, int size);
 void in_bit(bool *bits, int size);
-void nghichDao(bool *bits, int size);
-void doiDau(bool *bits, int size);
-int laChuSo(char c);
-int laHopLe(char *num);
+void nghich_dao_bit(bool *bits, int size);
+void doi_dau_bit(bool *bits, int size);
+bool la_chu_so(char c, int radix);
+bool la_hop_le_QInt(char *num, int radix);
 
 /* Chuyen input -> QInt
  * cu the, input -> bit[128]
- * bit[128] chia ra 4 block
- * moi block dua ve block cua QInt
+ * bit[128] chia ra 4 sequence dai 32 bit
+ * moi sequence la mot block cua QInt
  */
-int block_to_int(bool *bits, int from, int to);
-void chia_2(char *num);
+int seq_to_int(bool *bits, int from, int to);
+void chia_2_str10(char *num);
 bool *str10_to_bit(char *num);
-// TODO chuyen string dang 2-digits ve bit
+// TODO chuyen string dang 2-digits va 16-digits ve bit[128]
 bool *str2_to_bit(char *num);
+bool *str16_to_bit(char *num);
 
 /* Chuyen QInt -> input
- * cu the, doi tung block cua QInt -> bit[128]
+ * cu the, doi tung block cua QInt ve sequence dai 32 bit
+ * gop 4 sequence -> bit[128]
  * bit[128] -> input (so dang string)
  */
-void int_to_block(int x, bool *bits, int from, int to);
-void cong_str(char *A, char *B);
-void nhan_2(char *num);
+void int_to_seq(int x, bool *bits, int from, int to);
+void cong_str10(char *A, char *B);
+void nhan_2_str10(char *num);
 char *bit_to_str10(bool *bits, int size);
 // TODO chuyen bit ve dang string 2-digits
 char *bit_to_str2(bool *bit, int size);
@@ -51,11 +53,9 @@ void PrintQInt(QInt q);
 // YEUCAU: Chuyen doi, mac dinh bits la 128
 bool *DecToBin(QInt q);
 QInt BinToDec(bool *bits);
-int nibble_to_uint(bool *bits, int from, int to);
+int seq_to_uint(bool *bits, int from, int to);
 char *BinToHex(bool *bits);
 char *DecToHex(QInt q);
-// TODO chuyen hexa -> QInt
-QInt HexToDec(char *);
 
 /* YEUCAU: Xu ly toan tu + - * /
  * tran so cua cong: am + am = duong va duong + duong = am
@@ -74,8 +74,8 @@ QInt operator&(QInt a, QInt b);
 QInt operator|(QInt a, QInt b);
 QInt operator^(QInt a, QInt b);
 QInt operator~(QInt a);
-void dich_trai_1(bool *bits, int size);
-void dich_phai_1(bool *bits, int size);
+void dich_trai_1_bit(bool *bits, int size);
+void dich_phai_1_bit(bool *bits, int size);
 QInt operator<<(QInt a, int count);
 QInt operator>>(QInt a, int count);
 

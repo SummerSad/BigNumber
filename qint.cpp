@@ -4,7 +4,7 @@
 #include <string.h>
 
 // Ham phu tro
-void cong_1(bool *bits, int size)
+void cong_1_bit(bool *bits, int size)
 {
 	if (bits[size - 1] == 0) {
 		// 0 + 1 = 1
@@ -26,7 +26,7 @@ void cong_1(bool *bits, int size)
 	}
 }
 
-void tru_1(bool *bits, int size)
+void tru_1_bit(bool *bits, int size)
 {
 	if (bits[size - 1] == 1) {
 		// 1 - 1 = 0
@@ -57,7 +57,7 @@ void in_bit(bool *bits, int size)
 }
 
 // 101 -> 010
-void nghichDao(bool *bits, int size)
+void nghich_dao_bit(bool *bits, int size)
 {
 	for (int i = 0; i < size; ++i) {
 		bits[i] = 1 - bits[i];
@@ -65,32 +65,41 @@ void nghichDao(bool *bits, int size)
 }
 
 // am -> duong va nguoc lai (bu 2)
-void doiDau(bool *bits, int size)
+void doi_dau_bit(bool *bits, int size)
 {
 	if (bits[0] == 0) {
 		// so duong
-		nghichDao(bits, size);
-		cong_1(bits, size);
+		nghich_dao_bit(bits, size);
+		cong_1_bit(bits, size);
 	} else {
-		tru_1(bits, size);
-		nghichDao(bits, size);
+		tru_1_bit(bits, size);
+		nghich_dao_bit(bits, size);
 	}
 }
 
-int laChuSo(char c)
+// radix la co so (10, 2, 16)
+bool la_chu_so(char c, int radix)
 {
-	return c >= '0' && c <= '9';
+	if (radix == 10)
+		return c >= '0' && c <= '9';
+	if (radix == 2)
+		return c == '0' || c == '1';
+	if (radix == 16)
+		return (c >= '0' && c <= '9') || (c >= 'A' && c <= 'F');
+	return 0;
 }
 
-int laHopLe(char *num)
+bool la_hop_le_QInt(char *num, int radix)
 {
 	if (!num || strlen(num) <= 0)
 		return 0;
 	int i = 0;
-	if (num[i] == '+' || num[i] == '-')
-		++i;
+	if (radix == 10) {
+		if (num[i] == '+' || num[i] == '-')
+			++i;
+	}
 	for (; num[i] != '\0'; ++i) {
-		if (!laChuSo(num[i]))
+		if (!la_chu_so(num[i], radix))
 			return 0;
 	}
 	return 1;
@@ -98,12 +107,12 @@ int laHopLe(char *num)
 
 /* Chuyen input -> QInt
  * cu the, input -> bit[128]
- * bit[128] chia ra 4 block
- * moi block dua ve block cua QInt
+ * bit[128] chia ra 4 sequence dai 32 bit
+ * moi sequence la mot block cua QInt
  */
 
 // so string 10-digits chia 2 (ket qua > 0)
-void chia_2(char *num)
+void chia_2_str10(char *num)
 {
 	char *thuong = (char *)malloc(sizeof(char) * (strlen(num) + 1));
 
@@ -136,7 +145,7 @@ bool *str10_to_bit(char *num)
 {
 	const int size = 128;
 	bool *bits = (bool *)malloc(sizeof(bool) * size);
-	if (!laHopLe(num)) {
+	if (!la_hop_le_QInt(num, 10)) {
 		printf("Input khong hop le\n");
 		for (int i = 0; i < size; ++i) {
 			bits[i] = 0;
@@ -162,31 +171,31 @@ bool *str10_to_bit(char *num)
 		} else {
 			bits[i] = 1;
 		}
-		chia_2(temp_num);
+		chia_2_str10(temp_num);
 	}
 	if (laSoAm) {
-		doiDau(bits, size);
+		doi_dau_bit(bits, size);
 	}
 	free(temp_num);
 	return bits;
 }
 
-// chuyen 1 block (bu 2) sang so nguyen
-int block_to_int(bool *bits, int from, int to)
+// chuyen 1 sequence (day bit bu 2) sang so nguyen
+int seq_to_int(bool *bits, int from, int to)
 {
 	int size = to - from + 1;
 	if (size != 32) {
-		printf("Block khong du 32 bit\n");
+		printf("Sequence khong du 32 bit\n");
 		return 0;
 	}
 	bool *temp_bits = (bool *)malloc(sizeof(bool) * size);
 	for (int i = 0; i < size; ++i) {
 		temp_bits[i] = bits[from + i];
 	}
-	int laSoAm = 0;
+	bool laSoAm = 0;
 	if (temp_bits[0] == 1) {
 		laSoAm = 1;
-		doiDau(temp_bits, size);
+		doi_dau_bit(temp_bits, size);
 	}
 	int result = 0;
 	for (int i = 0; i < size; ++i) {
@@ -197,14 +206,15 @@ int block_to_int(bool *bits, int from, int to)
 }
 
 /* Chuyen QInt -> input
- * cu the, doi tung block cua QInt -> bit[128]
+ * cu the, doi tung block cua QInt ve sequence dai 32 bit
+ * gop 4 sequence -> bit[128]
  * bit[128] -> input (so dang string)
  */
-void int_to_block(int x, bool *bits, int from, int to)
+void int_to_seq(int x, bool *bits, int from, int to)
 {
 	int size = to - from + 1;
 	if (size != 32) {
-		printf("Block khong du 32 bit\n");
+		printf("Sequence khong du 32 bit\n");
 		return;
 	}
 	for (int i = to; i >= from; --i) {
@@ -214,7 +224,7 @@ void int_to_block(int x, bool *bits, int from, int to)
 }
 
 // A = A + B (10-digits, A va B > 0)
-void cong_str(char *A, char *B)
+void cong_str10(char *A, char *B)
 {
 	if (!A || !B || strlen(A) != strlen(B)) {
 		printf("A, B khong cung chieu dai\n");
@@ -229,7 +239,7 @@ void cong_str(char *A, char *B)
 }
 
 // num = num * 2 (10-digits, num > 0)
-void nhan_2(char *num)
+void nhan_2_str10(char *num)
 {
 	if (!num || strlen(num) < 1) {
 		printf("num khong hop le\n");
@@ -258,7 +268,7 @@ char *bit_to_str10(bool *bits, int size)
 	bool laSoAm = 0;
 	if (temp_bits[0] == 1) {
 		laSoAm = 1;
-		doiDau(temp_bits, size);
+		doi_dau_bit(temp_bits, size);
 	}
 
 	// 2^10 = 1024 xap xi 10^3, 128 : 3 = 42
@@ -286,9 +296,9 @@ char *bit_to_str10(bool *bits, int size)
 			}
 			temp[max_size - 1] = '1';
 			for (int j = 0; j < i; ++j) {
-				nhan_2(temp);
+				nhan_2_str10(temp);
 			}
-			cong_str(num, temp);
+			cong_str10(num, temp);
 			free(temp);
 		}
 	}
@@ -336,7 +346,7 @@ bool *DecToBin(QInt q)
 {
 	bool *bits = (bool *)malloc(sizeof(bool) * 128);
 	for (int i = 0, y = 0; i < 4; ++i, y += 32) {
-		int_to_block(q.block[i], bits, y, y + 31);
+		int_to_seq(q.block[i], bits, y, y + 31);
 	}
 	return bits;
 }
@@ -345,16 +355,16 @@ QInt BinToDec(bool *bits)
 {
 	QInt x;
 	for (int i = 0, j = 0; i < 4; ++i, j += 32) {
-		x.block[i] = block_to_int(bits, j, j + 31);
+		x.block[i] = seq_to_int(bits, j, j + 31);
 	}
 	return x;
 }
 
-// nibble la 4 bit nhu 0101
-int nibble_to_uint(bool *bits, int from, int to)
+// Doi ra so nguyen khong dau
+int seq_to_uint(bool *bits, int from, int to)
 {
 	int size = to - from + 1;
-	if (size != 4) {
+	if (size >= 32) {
 		return 0;
 	}
 
@@ -375,7 +385,7 @@ char *BinToHex(bool *bits)
 	hexas[size] = '\0';
 	char hexa_digit[] = "0123456789ABCDEF";
 	for (int i = 0, j = 0; i < size; ++i, j += 4) {
-		int d = nibble_to_uint(bits, j, j + 3);
+		int d = seq_to_uint(bits, j, j + 3);
 		hexas[i] = hexa_digit[d];
 	}
 	return hexas;
@@ -438,7 +448,7 @@ QInt operator-(QInt a, QInt b)
 {
 	// tru la cong voi so doi
 	bool *bits_2 = DecToBin(b);
-	doiDau(bits_2, 128);
+	doi_dau_bit(bits_2, 128);
 	QInt new_b = BinToDec(bits_2);
 	free(bits_2);
 	return a + new_b;
@@ -501,11 +511,11 @@ QInt operator/(QInt Q, QInt M)
 	bool M_sign = 0;
 	if (Q.block[0] < 0) {
 		Q_sign = 1;
-		doiDau(Q_bits, QInt_Size);
+		doi_dau_bit(Q_bits, QInt_Size);
 	}
 	if (M.block[0] < 0) {
 		M_sign = 1;
-		doiDau(M_bits, QInt_Size);
+		doi_dau_bit(M_bits, QInt_Size);
 		M = BinToDec(M_bits);
 	}
 	free(M_bits);
@@ -543,7 +553,7 @@ QInt operator/(QInt Q, QInt M)
 
 	// Xet dau ket qua
 	if ((Q_sign ^ M_sign) == 1) {
-		doiDau(Q_bits, QInt_Size);
+		doi_dau_bit(Q_bits, QInt_Size);
 	}
 
 	QInt q = BinToDec(Q_bits);
@@ -621,7 +631,7 @@ QInt operator^(QInt a, QInt b)
 QInt operator~(QInt a)
 {
 	bool *bits_1 = DecToBin(a);
-	nghichDao(bits_1, 128);
+	nghich_dao_bit(bits_1, 128);
 	QInt q = BinToDec(bits_1);
 	free(bits_1);
 	return q;
@@ -631,14 +641,14 @@ QInt operator~(QInt a)
  * Dich trai luon them so 0
  * Dich phai them bit dau tien (0 hoac 1)
  */
-void dich_trai_1(bool *bits, int size)
+void dich_trai_1_bit(bool *bits, int size)
 {
 	for (int i = 0; i < size - 1; ++i) {
 		bits[i] = bits[i + 1];
 	}
 	bits[size - 1] = 0;
 }
-void dich_phai_1(bool *bits, int size)
+void dich_phai_1_bit(bool *bits, int size)
 {
 	for (int i = size - 1; i > 0; --i) {
 		bits[i] = bits[i - 1];
@@ -655,7 +665,7 @@ QInt operator<<(QInt a, int count)
 		}
 	} else {
 		for (int i = 0; i < count; ++i) {
-			dich_trai_1(bits, size);
+			dich_trai_1_bit(bits, size);
 		}
 	}
 	QInt q = BinToDec(bits);
@@ -673,7 +683,7 @@ QInt operator>>(QInt a, int count)
 		}
 	} else {
 		for (int i = 0; i < count; ++i) {
-			dich_phai_1(bits, size);
+			dich_phai_1_bit(bits, size);
 		}
 	}
 	QInt q = BinToDec(bits);
