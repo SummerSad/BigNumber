@@ -472,7 +472,7 @@ QInt operator*(QInt a, QInt M)
 			}
 			free(bits_temp);
 		}
-		// dich bit
+		// dich phai bit
 		bool last_A = bits_A[size - 1];
 		bit_Q0 = bits_Q[size - 1];
 		for (int j = size - 1; j > 0; --j) {
@@ -486,6 +486,69 @@ QInt operator*(QInt a, QInt M)
 	QInt q = BinToDec(bits_Q);
 	free(bits_Q);
 	free(bits_A);
+	return q;
+}
+
+// Chia bang thuat toan chia khong dau
+// A  Q           M
+// 0  so bi chia  so chia
+QInt operator/(QInt Q, QInt M)
+{
+	bool *Q_bits = DecToBin(Q);
+	bool *M_bits = DecToBin(M);
+	// Xet dau
+	bool Q_sign = 0;
+	bool M_sign = 0;
+	if (Q.block[0] < 0) {
+		Q_sign = 1;
+		doiDau(Q_bits, QInt_Size);
+	}
+	if (M.block[0] < 0) {
+		M_sign = 1;
+		doiDau(M_bits, QInt_Size);
+		M = BinToDec(M_bits);
+	}
+	free(M_bits);
+
+	// A la bien tam
+	bool *A_bits = (bool *)malloc(sizeof(bool) * QInt_Size);
+	QInt A;
+	for (int i = 0; i < QInt_Size; ++i) {
+		A_bits[i] = 0;
+	}
+	bool Q_first = 0;
+
+	for (int i = 0; i < QInt_Size; ++i) {
+		// dich trai bits
+		Q_first = Q_bits[0];
+		for (int j = 0; j < QInt_Size - 1; ++j) {
+			Q_bits[j] = Q_bits[j + 1];
+			A_bits[j] = A_bits[j + 1];
+		}
+		A_bits[QInt_Size - 1] = Q_first;
+
+		A = BinToDec(A_bits);
+		A = A - M;
+
+		// A < 0
+		if (A.block[0] < 0) {
+			Q_bits[QInt_Size - 1] = 0;
+			A = A + M;
+		} else {
+			Q_bits[QInt_Size - 1] = 1;
+		}
+		free(A_bits);
+		A_bits = DecToBin(A);
+	}
+
+	// Xet dau ket qua
+	if ((Q_sign ^ M_sign) == 1) {
+		doiDau(Q_bits, QInt_Size);
+	}
+
+	QInt q = BinToDec(Q_bits);
+	free(Q_bits);
+	free(A_bits);
 	return q;
 }
 
@@ -653,9 +716,11 @@ void test_cong_tru()
 	QInt q_1, q_2;
 	ScanQInt(q_1);
 	ScanQInt(q_2);
+
 	printf("Tong\n");
 	QInt q_3 = q_1 + q_2;
 	PrintQInt(q_3);
+
 	printf("Hieu\n");
 	QInt q_4 = q_1 - q_2;
 	PrintQInt(q_4);
@@ -667,9 +732,14 @@ void test_nhan_chia()
 	QInt q_1, q_2;
 	ScanQInt(q_1);
 	ScanQInt(q_2);
-	printf("Tich\n");
+
+	printf("Nhan\n");
 	QInt q_3 = q_1 * q_2;
 	PrintQInt(q_3);
+
+	printf("Chia\n");
+	QInt q_4 = q_1 / q_2;
+	PrintQInt(q_4);
 }
 
 void test_bit_operator()

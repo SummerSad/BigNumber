@@ -11,6 +11,8 @@ struct QInt {
 	int block[4];
 };
 
+const int QInt_Size = 128;
+
 // Ham phu tro
 void cong_1(bool *bits, int size);
 void tru_1(bool *bits, int size);
@@ -63,7 +65,7 @@ QInt HexToDec(char *);
 QInt operator+(QInt a, QInt b);
 QInt operator-(QInt a, QInt b);
 QInt operator*(QInt a, QInt M);
-// TODO phep chia
+QInt operator/(QInt Q, QInt M);
 
 /* YEUCAUL Xu ly toan tu AND (&), OR(|), XOR(^), NOT(~)
  * dich trai va dich phai
