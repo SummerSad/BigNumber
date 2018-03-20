@@ -12,10 +12,10 @@ const int Qfloat_bits_size = 128;
 
 // So chu so lon nhan he so 10 bieu dien
 // Qfloat_MAX_STR10 = 10.....i ; i =4928;
-const int Qfloat_MAX_STR10 = 5000;
+const int Qfloat_MAX_STR10 = 500;
 
 // So chu so lon nhat he so 2 bieu dien he so 10 cao nhat dang CHUAN
-const int Qfloat_MAX_STR2 = 16384;
+const int Qfloat_MAX_STR2 = 1638;
 
 const int Qfloat_Bits_ThapPhan = 112;
 

@@ -32,7 +32,6 @@ bool *lay_Phan_Nguyen(char *num)
 	if (num[stop_point] == '+' || num[stop_point] == '-') {
 		++stop_point;
 	}
-
 	// Tach dau cham phan nguyen truoc dau '.'
 	char *char_nguyen = strtok(num + stop_point, ".");
 
@@ -62,7 +61,6 @@ bool *lay_Phan_ThapPhan_BD(char *num)
 	char *char_thapphan = strtok(num, ".");
 	// Lay phan con lai sau dau "."
 	char_thapphan = strtok(NULL, ".");
-
 	// Khoi tao mang bits cho phan thap phan
 	bool *bits_phan_thapphan =
 	    (bool *)malloc(sizeof(bool) * Qfloat_MAX_STR2);
@@ -87,7 +85,6 @@ bool *lay_Phan_ThapPhan_BD(char *num)
 		}
 		bits_phan_thapphan[i] = d;
 	}
-
 	return bits_phan_thapphan;
 }
 
@@ -144,6 +141,7 @@ bool *lay_Phan_ThapPhan(int so_mu_int, bool *bits_nguyen,
 {
 	bool *bits_thaphan =
 	    (bool *)malloc(sizeof(bool *) * Qfloat_Bits_ThapPhan);
+
 	for (int i = 0; i < Qfloat_Bits_ThapPhan; ++i) {
 		bits_thaphan[i] = 0;
 	}
@@ -170,8 +168,9 @@ bool *lay_Phan_ThapPhan(int so_mu_int, bool *bits_nguyen,
 
 		int i = 0;
 		int j = -so_mu_int;
+
 		// Copy bits sau 1. trong phan thap phan
-		for (; j < Qfloat_Bits_ThapPhan; ++j) {
+		for (; j < Qfloat_MAX_STR2 && i < Qfloat_Bits_ThapPhan; ++j) {
 			bits_thaphan[i++] = bits_thapphan_BD[j];
 		}
 	}
@@ -251,7 +250,6 @@ bool *float_str10_to_bit(char *num)
 	bool *bits_thapphan_BD = lay_Phan_ThapPhan_BD(temp);
 
 	int so_mu_int = lay_So_Mu_INT(bits_nguyen, bits_thapphan_BD);
-
 	// Phan thap phan that su dang chuan
 	bool *bits_thapphan =
 	    lay_Phan_ThapPhan(so_mu_int, bits_nguyen, bits_thapphan_BD);
@@ -346,39 +344,54 @@ char *chuyen_so_mu_tu_biased(bool *bits)
 // Chuyen thap phan bits sang chuoi co so 10
 char *chuyen_thaphan_bits(bool *bits, int so_mu)
 {
+
+	int max_size = Qfloat_MAX_STR10;
+	// Tao chuoi thap phan str 10
+	char *thapphan_str10 = (char *)malloc(sizeof(char) * max_size + 1);
+	thapphan_str10[max_size] = '\0';
+
+	for (int i = 0; i < max_size; ++i) {
+		thapphan_str10[i] = '0';
+	}
+
+	// so_mu > Qfloat_Bits_ThapPhan thi phan thap phan = 0
+	if (so_mu > Qfloat_Bits_ThapPhan) {
+
+		return thapphan_str10;
+	}
+
 	// Khoi tao phan thap phan
 	bool *bits_thapphan =
 	    (bool *)malloc(sizeof(bool) * Qfloat_Bits_ThapPhan);
+
 	for (int i = 0; i < Qfloat_Bits_ThapPhan; ++i) {
 		bits_thapphan[i] = 0;
 	}
+
 	// Kiem tra so_mu de dich bits
-	if (so_mu > 0) {
+	if (so_mu >= 0 && so_mu < Qfloat_Bits_ThapPhan) {
 		int j = 0;
-		// Lay bits thap phan sau khi dich qua trai so_mu bits
 		for (int i = so_mu; i < Qfloat_Bits_ThapPhan; ++i) {
 			bits_thapphan[j++] = bits[i];
 		}
-	} else if (so_mu < 0) {
+		// Lay bits thap phan sau khi dich qua trai so_mu bits
+	} else if (so_mu < 0 && so_mu > -Qfloat_Bits_ThapPhan + 1) {
 		int i = -so_mu;
 		bits_thapphan[i - 1] = 1;
 		int j = 0;
 		for (; i < Qfloat_Bits_ThapPhan; ++i) {
 			bits_thapphan[i] = bits[j++];
 		}
+		so_mu = 0;
 	} else {
-		// Lay toan bo bits thap phan khi so_mu == 0
-		for (int i = 0; i < Qfloat_Bits_ThapPhan; ++i) {
-			bits_thapphan[i] = bits[i];
+		// so_mu <= -Qfloat_Bits_ThapPhan + 1
+		int i = 1;
+		// dich sang trai 1 bit
+		bits_thapphan[i - 1] = 1;
+		for (; i < Qfloat_Bits_ThapPhan; ++i) {
+			bits_thapphan[i] = bits[i - 1];
 		}
-	}
-
-	int max_size = (int)((Qfloat_Bits_ThapPhan * 3) / 10) + 1;
-	// Tao chuoi thap phan str 10
-	char *thapphan_str10 = (char *)malloc(sizeof(char) * max_size + 1);
-	thapphan_str10[max_size] = '\0';
-	for (int i = 0; i < max_size; ++i) {
-		thapphan_str10[i] = '0';
+		so_mu += 1;
 	}
 
 	for (int i = 0; i < Qfloat_Bits_ThapPhan; ++i) {
@@ -402,39 +415,114 @@ char *chuyen_thaphan_bits(bool *bits, int so_mu)
 		}
 	}
 	free(bits_thapphan);
+
+	if (so_mu < 0) {
+		int n = -so_mu;
+		for (int i = 0; i <= n; ++i) {
+			chia_2_str10_thapphan(thapphan_str10, max_size);
+		}
+	}
+	// printf("\n%s\n",thapphan_str10);
+	// Rut gon chuoi so
+	// Tim vi tri cuoi cung ben phai cung khac khong
+	int cungcuoi = max_size - 1;
+	for (; thapphan_str10[cungcuoi] == '0'; --cungcuoi) {
+	}
+
+	if (cungcuoi > 0) {
+		thapphan_str10 = (char *)realloc(thapphan_str10,
+						 sizeof(char) * cungcuoi + 1);
+		thapphan_str10[cungcuoi] = '\0';
+	} else {
+		thapphan_str10 =
+		    (char *)realloc(thapphan_str10, sizeof(char) * 2);
+		thapphan_str10[1] = '\0';
+		thapphan_str10[0] = '0';
+	}
+
 	return thapphan_str10;
 }
 
 // Chuyen phan nguyen bits sang chuoi co so 10
 char *chuyen_nguyen_bits(bool *bits, int so_mu)
 {
-	// Khoi tao phan thap phan
-	bool *bits_nguyen = (bool *)malloc(sizeof(bool) * Qfloat_Bits_ThapPhan);
-	for (int i = 0; i < Qfloat_Bits_ThapPhan; ++i) {
+	// Khoi tao phan nguyen
+	bool *bits_nguyen =
+	    (bool *)malloc(sizeof(bool) * Qfloat_Bits_ThapPhan + 1);
+	for (int i = 0; i < Qfloat_Bits_ThapPhan + 1; ++i) {
 		bits_nguyen[i] = 0;
 	}
 
 	// Kiem tra so_mu de dich bits
 	// so_mu < 0 ==> phan nguyen = 0
 	if (so_mu > 0) {
-		int i = Qfloat_Bits_ThapPhan - so_mu;
+		int i = Qfloat_Bits_ThapPhan + 1 - so_mu;
+		if (so_mu >= Qfloat_Bits_ThapPhan) {
+			i = 2;
+		}
 		bits_nguyen[i - 1] = 1;
-
-		// Lay bits thap phan sau khi dich qua trai so_mu bits
+		// Lay bits nguyen sau khi dich qua trai so_mu bits
 		int j = 0;
-		for (; i < Qfloat_Bits_ThapPhan; ++i) {
+		for (; i < Qfloat_Bits_ThapPhan + 1; ++i) {
 			bits_nguyen[i] = bits[j++];
 		}
 
 	} else if (so_mu == 0) {
 		// Phan_nguyen = 1
-		bits_nguyen[Qfloat_Bits_ThapPhan - 1] = 1;
+		bits_nguyen[Qfloat_Bits_ThapPhan] = 1;
 	}
 
 	// Tao chuoi thap phan str 10
-	char *nguyen_str10 = bit_to_str10(bits_nguyen, Qfloat_Bits_ThapPhan);
-
+	char *nguyen_str10 =
+	    bit_to_str10(bits_nguyen, Qfloat_Bits_ThapPhan + 1);
 	free(bits_nguyen);
+	int len_nguyen_str10 = strlen(nguyen_str10);
+
+	// tao size lon nhat cua phan nguyen
+	char *temp = (char *)malloc(Qfloat_MAX_STR10 * sizeof(char) + 1);
+	temp[Qfloat_MAX_STR10] = '\0';
+
+	for (int i = 0; i < Qfloat_MAX_STR10 - len_nguyen_str10; ++i) {
+		temp[i] = '0';
+	}
+	// copy nguyen_str10 vao cuoi chuoi temp
+	int j = 0;
+	for (int i = Qfloat_MAX_STR10 - len_nguyen_str10; i < Qfloat_MAX_STR10;
+	     ++i) {
+		temp[i] = nguyen_str10[j++];
+	}
+	// Xoa bien nguyen_str10 cu
+	free(nguyen_str10);
+
+	// phan nguyen_str10 * 2^(so_mu - Qfloat_Bits_ThapPhan + 1)
+	if (so_mu >= Qfloat_Bits_ThapPhan) {
+
+		for (int i = 0; i < so_mu - Qfloat_Bits_ThapPhan + 1; ++i) {
+			nhan_2_str10(temp);
+		}
+	}
+
+	// Rut gon chuoi so
+	// Tim vi tri dau tien khac khong
+	int dautien = 0;
+	for (; temp[dautien] == '0'; ++dautien) {
+	}
+
+	int nguyen_size =
+	    (dautien >= Qfloat_MAX_STR10) ? 1 : (Qfloat_MAX_STR10 - dautien);
+
+	nguyen_str10 = (char *)malloc(sizeof(char) * (nguyen_size + 1));
+	for (int i = 0; i < nguyen_size; ++i) {
+		nguyen_str10[i] = '0';
+	}
+	nguyen_str10[nguyen_size] = '\0';
+
+	// copy nhung so co nghia vao chuoi nguyen_str10
+	for (int i = dautien; i < Qfloat_MAX_STR10; ++i) {
+		nguyen_str10[i - dautien] = temp[i];
+	}
+
+	free(temp);
 	return nguyen_str10;
 }
 
@@ -508,9 +596,9 @@ char *Qfloat_bit_to_str10(bool *bits)
 	char *so_mu = chuyen_so_mu_tu_biased(bits);
 
 	int so_mu_int = str10_to_int(so_mu);
+
 	// chuyen so nguyen thanh char* co so 10
 	char *phan_nguyen = chuyen_nguyen_bits(bits, so_mu_int);
-
 	// chuyen so thap phan thanh char* co so 10
 	char *thap_phan = chuyen_thaphan_bits(bits, so_mu_int);
 
