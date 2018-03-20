@@ -33,7 +33,7 @@ QInt operator-(QInt a, QInt b);
 QInt operator*(QInt a, QInt M);
 QInt operator/(QInt Q, QInt M);
 
-/* YEUCAUL Xu ly toan tu AND (&), OR(|), XOR(^), NOT(~)
+/* YEUCAU Xu ly toan tu AND (&), OR(|), XOR(^), NOT(~)
  * dich trai va dich phai
  */
 QInt operator&(QInt a, QInt b);

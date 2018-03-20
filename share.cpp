@@ -25,28 +25,6 @@ void cong_1_bit(bool *bits, int size)
 	}
 }
 
-void tru_1_bit(bool *bits, int size)
-{
-	if (bits[size - 1] == 1) {
-		// 1 - 1 = 0
-		bits[size - 1] = 0;
-	} else {
-		// (1)0 - 1 = 1
-		bits[size - 1] = 1;
-		int d = 1;
-		for (int i = size - 2; i >= 0; --i) {
-			if (d == 0)
-				break;
-			if (bits[i] == 1) {
-				bits[i] = 0;
-				d = 0;
-			} else {
-				bits[i] = 1;
-			}
-		}
-	}
-}
-
 void in_bit(bool *bits, int size)
 {
 	for (int i = 0; i < size; ++i) {
@@ -66,14 +44,8 @@ void nghich_dao_bit(bool *bits, int size)
 // am -> duong va nguoc lai (bu 2)
 void doi_dau_bit(bool *bits, int size)
 {
-	if (bits[0] == 0) {
-		// so duong
-		nghich_dao_bit(bits, size);
-		cong_1_bit(bits, size);
-	} else {
-		tru_1_bit(bits, size);
-		nghich_dao_bit(bits, size);
-	}
+	nghich_dao_bit(bits, size);
+	cong_1_bit(bits, size);
 }
 
 // radix la co so (10, 2, 16)

@@ -2,7 +2,6 @@
 #define SHARE_INCLUDED
 
 void cong_1_bit(bool *bits, int size);
-void tru_1_bit(bool *bits, int size);
 void in_bit(bool *bits, int size);
 void nghich_dao_bit(bool *bits, int size);
 void doi_dau_bit(bool *bits, int size);
