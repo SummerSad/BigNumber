@@ -4,94 +4,27 @@
 #include <stdlib.h>
 #include <string.h>
 
-void chia_2_str10_thapphan(char *num, int size);
-
-// Kiem tra Qfloat hop le
-// -1: khong hop le, 0: co 0 dau cham dot, 1: co 1 dau cham dot
 int la_hop_le_Qfloat(char *num, int radix);
 
-// Ham lay phan thap phan ban dau
 bool *lay_Phan_ThapPhan_BD(char *num);
-// Ham lay phan nguyen
-bool *lay_Phan_Nguyen(char *num);
-// Ham lay so mu
-int lay_So_Mu_INT(bool *bits_nguyen, bool *bits_thapphan_BD);
-// Lay ra phan thap phan that su
 bool *lay_Phan_ThapPhan(int so_mu_int, bool *bits_nguyen,
 			bool *bits_thapphan_BD);
+bool *lay_Phan_Nguyen(char *num);
+int lay_So_Mu_INT(bool *bits_nguyen, bool *bits_thapphan_BD);
 
-// Cong hai day bits
-bool *Cong(bool *bits_1, bool *bits_2, int size);
-// Tru hai day bits: bits1 - bits2
-bool *Tru(bool *bits_1, bool *bits_2, int size);
-// Chuyen int qua binary
 void int_to_bi(int x, bool *bits, int bits_size);
-// chuyen int qua biased
 bool *int_to_biased(int so_mu_int);
-// Thiet lap day bits so cham dong
 bool *bits_so_cham_dong(bool laSoAm, bool *so_mu_biased, bool *bits_thapphan);
-// Chuyen chuoi float 10 sang bits
 bool *float_str10_to_bit(char *num);
-// chuyen 1 sequence (day bit bu 2) sang so nguyen
 
-// Chuyen so biased sang bits so bu 2
 bool *biased_to_bits(bool *biased, int size);
-// Chuyen bit sang chuoi co so 10
-// Chuyen so mu tu biased sang chuoi co so 10
 char *chuyen_so_mu_biased(bool *bits);
-// Chuyen thap phan bits sang chuoi co so 10
 char *chuyen_thaphan_bits(bool *bits);
-// Chuyen phan nguyen bits sang chuoi co so 10
 char *chuyen_nguyen_bits(bool *bits, int so_mu);
-// Chuyen chuoi co so 10 sang so nguyen co so 10
+void chia_2_str10_thapphan(char *num, int size);
 int str10_to_int(char *num);
-// Chuyen Qfloat dang bit sang chuoi co so 10
 char *Qfloat_bit_to_str10(bool *bits);
 
-void chia_2_str10_thapphan(char *num, int size)
-{
-	char *thuong = (char *)malloc(sizeof(char) * size + 1);
-	thuong[size] = '\0';
-	for (int k = 0; k < size; ++k) {
-		thuong[k] = '0';
-	}
-	// index mang num
-	int i = 0;
-	if (num[i] == '-' || num[i] == '+')
-		++i;
-
-	// Tim so chu so != 0 dau tien trong day thap phan num
-	for (; num[i] == '0'; ++i) {
-	}
-
-	int temp = num[i] - '0';
-	// index mang thuong
-	int j = i;
-
-	if (num[i] - '0' < 2) {
-		if (num[i + 1] == '\0') {
-			strcpy(num, "0");
-			free(thuong);
-			return;
-		}
-		temp = temp * 10 + num[i + 1] - '0';
-		++i;
-		++j;
-	}
-
-	for (; num[i] != '\0'; ++i) {
-		thuong[j++] = temp / 2 + '0';
-		temp = (temp % 2) * 10 + num[i + 1] - '0';
-	}
-	// So du con lai
-	if (temp == 1 && j < size) {
-		thuong[j++] = '5';
-	}
-	strcpy(num, thuong);
-	free(thuong);
-}
-
-// Ham lay phan nguyen
 bool *lay_Phan_Nguyen(char *num)
 {
 	// Kiem tra xem ki tu dau tien co phai la dau + or - hay khong?
@@ -183,7 +116,7 @@ int la_hop_le_Qfloat(char *num, int radix)
 	}
 	return 1;
 }
-// Ham lay so mu
+
 int lay_So_Mu_INT(bool *bits_nguyen, bool *bits_thapphan_BD)
 {
 	// Tim vi tri 1. trong bits_nguyen
@@ -204,6 +137,7 @@ int lay_So_Mu_INT(bool *bits_nguyen, bool *bits_thapphan_BD)
 
 	return Qfloat_MAX_STR2 - dot - 1;
 }
+
 // Lay ra phan thap phan that su
 bool *lay_Phan_ThapPhan(int so_mu_int, bool *bits_nguyen,
 			bool *bits_thapphan_BD)
@@ -242,48 +176,6 @@ bool *lay_Phan_ThapPhan(int so_mu_int, bool *bits_nguyen,
 	return bits_thaphan;
 }
 
-// Cong hai day bits
-bool *Cong(bool *bits_1, bool *bits_2, int size)
-{
-	bool *tong = (bool *)malloc(sizeof(bool) * (size));
-
-	int rememberNumber = 0; // 1 + 1 = 0 remember 1
-
-	for (int i = size - 1; i >= 0; --i) {
-		if (rememberNumber == 0) {
-			if (bits_1[i] == 1 && bits_2[i] == 1) {
-				tong[i] = 0;
-				rememberNumber = 1;
-			} else {
-				if (bits_1[i] == 0 && bits_2[i] == 0)
-					tong[i] = 0;
-				else
-					tong[i] = 1;
-			}
-		} else {
-			if (bits_1[i] == 0 && bits_2[i] == 0) {
-				tong[i] = 1;
-				rememberNumber = 0;
-			} else {
-				if (bits_1[i] == 1 && bits_2[i] == 1)
-					tong[i] = 1;
-				else
-					tong[i] = 0;
-			}
-		}
-	}
-
-	return tong;
-}
-
-// Tru hai day bits: bits1 - bits2
-bool *Tru(bool *bits_1, bool *bits_2, int size)
-{
-	// tru la cong voi so doi
-	doi_dau_bit(bits_2, size);
-	return Cong(bits_1, bits_2, size);
-}
-
 // Chuyen int qua binary
 void int_to_bi(int x, bool *bits, int bits_size)
 {
@@ -308,7 +200,7 @@ bool *int_to_biased(int so_mu_int)
 		biased_0[i] = 1;
 	}
 
-	biased = Cong(int_bi, biased_0, Qfloat_Bits_Mu);
+	biased = cong_bits(int_bi, biased_0, Qfloat_Bits_Mu);
 
 	free(biased_0);
 	free(int_bi);
@@ -423,7 +315,7 @@ bool *biased_to_bits(bool *biased, int size)
 		biased_0[i] = 1;
 	}
 
-	bits = Tru(biased, biased_0, size);
+	bits = tru_bits(biased, biased_0, size);
 
 	free(biased_0);
 	return bits;
@@ -547,6 +439,49 @@ char *chuyen_nguyen_bits(bool *bits, int so_mu)
 	return nguyen_str10;
 }
 
+void chia_2_str10_thapphan(char *num, int size)
+{
+	char *thuong = (char *)malloc(sizeof(char) * size + 1);
+	thuong[size] = '\0';
+	for (int k = 0; k < size; ++k) {
+		thuong[k] = '0';
+	}
+	// index mang num
+	int i = 0;
+	if (num[i] == '-' || num[i] == '+')
+		++i;
+
+	// Tim so chu so != 0 dau tien trong day thap phan num
+	for (; num[i] == '0'; ++i) {
+	}
+
+	int temp = num[i] - '0';
+	// index mang thuong
+	int j = i;
+
+	if (num[i] - '0' < 2) {
+		if (num[i + 1] == '\0') {
+			strcpy(num, "0");
+			free(thuong);
+			return;
+		}
+		temp = temp * 10 + num[i + 1] - '0';
+		++i;
+		++j;
+	}
+
+	for (; num[i] != '\0'; ++i) {
+		thuong[j++] = temp / 2 + '0';
+		temp = (temp % 2) * 10 + num[i + 1] - '0';
+	}
+	// So du con lai
+	if (temp == 1 && j < size) {
+		thuong[j++] = '5';
+	}
+	strcpy(num, thuong);
+	free(thuong);
+}
+
 // Chuyen chuoi co so 10 sang so nguyen co so 10
 int str10_to_int(char *num)
 {
@@ -601,7 +536,7 @@ char *Qfloat_bit_to_str10(bool *bits)
 	// copy thap_phan vao mang new_num
 	if (!so_0_thapphan) {
 		new_num[index++] = '.';
-		for (int i = 0; phan_nguyen[i] != '\0'; ++i) {
+		for (int i = 0; thap_phan[i] != '\0'; ++i) {
 			new_num[index++] = thap_phan[i];
 		}
 	}

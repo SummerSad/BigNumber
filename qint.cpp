@@ -5,7 +5,6 @@
 #include <string.h>
 
 bool la_hop_le_QInt(char *num, int radix);
-
 bool *str10_to_bit(char *num);
 // TODO chuyen string dang 2-digits va 16-digits ve bit[128]
 bool *str2_to_bit(char *num);
@@ -148,31 +147,7 @@ QInt operator+(QInt a, QInt b)
 	bool *bits_1 = DecToBin_int(a);
 	bool *bits_2 = DecToBin_int(b);
 	const int size = 128;
-	bool *tong = (bool *)malloc(sizeof(bool) * (size));
-	int rememberNumber = 0; // 1 + 1 = 0 remember 1
-	for (int i = size - 1; i >= 0; --i) {
-		if (rememberNumber == 0) {
-			if (bits_1[i] == 1 && bits_2[i] == 1) {
-				tong[i] = 0;
-				rememberNumber = 1;
-			} else {
-				if (bits_1[i] == 0 && bits_2[i] == 0)
-					tong[i] = 0;
-				else
-					tong[i] = 1;
-			}
-		} else {
-			if (bits_1[i] == 0 && bits_2[i] == 0) {
-				tong[i] = 1;
-				rememberNumber = 0;
-			} else {
-				if (bits_1[i] == 1 && bits_2[i] == 1)
-					tong[i] = 1;
-				else
-					tong[i] = 0;
-			}
-		}
-	}
+	bool *tong = cong_bits(bits_1, bits_2, size);
 	QInt q = BinToDec_int(tong);
 	free(bits_1);
 	free(bits_2);

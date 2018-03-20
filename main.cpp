@@ -5,5 +5,6 @@
 
 int main()
 {
+	testScanQfloat();
 	return 0;
 }

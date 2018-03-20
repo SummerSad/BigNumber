@@ -19,6 +19,10 @@ int seq_to_uint(bool *bits, int from, int to);
 void dich_trai_1_bit(bool *bits, int size);
 void dich_phai_1_bit(bool *bits, int size);
 
+// Cong tru 2 bits
+bool *cong_bits(bool *bits_1, bool *bits_2, int size);
+bool *tru_bits(bool *bits_1, bool *bits_2, int size);
+
 // str10
 void cong_str10(char *A, char *B);
 void nhan_2_str10(char *num);

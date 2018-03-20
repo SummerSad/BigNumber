@@ -159,7 +159,47 @@ void dich_phai_1_bit(bool *bits, int size)
 	}
 }
 
-// str10
+// Cong tru 2 bits
+bool *cong_bits(bool *bits_1, bool *bits_2, int size)
+{
+	bool *tong = (bool *)malloc(sizeof(bool) * (size));
+	int rememberNumber = 0; // 1 + 1 = 0 remember 1
+
+	for (int i = size - 1; i >= 0; --i) {
+		if (rememberNumber == 0) {
+			if (bits_1[i] == 1 && bits_2[i] == 1) {
+				tong[i] = 0;
+				rememberNumber = 1;
+			} else {
+				if (bits_1[i] == 0 && bits_2[i] == 0)
+					tong[i] = 0;
+				else
+					tong[i] = 1;
+			}
+		} else {
+			if (bits_1[i] == 0 && bits_2[i] == 0) {
+				tong[i] = 1;
+				rememberNumber = 0;
+			} else {
+				if (bits_1[i] == 1 && bits_2[i] == 1)
+					tong[i] = 1;
+				else
+					tong[i] = 0;
+			}
+		}
+	}
+
+	return tong;
+}
+
+bool *tru_bits(bool *bits_1, bool *bits_2, int size)
+{
+	// tru la cong voi so doi
+	doi_dau_bit(bits_2, size);
+	return cong_bits(bits_1, bits_2, size);
+}
+
+// str10 "123456" or "-1234"
 // A = A + B (10-digits, A va B > 0)
 void cong_str10(char *A, char *B)
 {
