@@ -6,11 +6,9 @@
 
 bool la_hop_le_QInt(char *num, int radix);
 bool *str10_to_bit(char *num);
-// TODO chuyen string dang 2-digits va 16-digits ve bit[128]
 bool *str2_to_bit(char *num);
+// TODO str16
 bool *str16_to_bit(char *num);
-
-// TODO chuyen bit ve dang string 2-digits
 char *bit_to_str2(bool *bit, int size);
 
 bool la_hop_le_QInt(char *num, int radix)
@@ -67,6 +65,41 @@ bool *str10_to_bit(char *num)
 	}
 	free(temp_num);
 	return bits;
+}
+
+bool *str2_to_bit(char *num)
+{
+	bool *ans = (bool *)malloc(sizeof(bool) * QInt_Size);
+	int len = strlen(num); // Dem do dai cua chuoi
+	for (int i = QInt_Size - 1; i >= QInt_Size - len; i--)
+		ans[i] = num[len + i - QInt_Size] -
+			 '0'; // Sao chep chuoi vao cuoi day bit
+	for (int i = 0; i < QInt_Size - len; i++)
+		ans[i] = 0; // Dat cac bit con trong la 0
+	return ans;
+}
+
+char *bit_to_str2(bool *str2)
+{
+	int count = 0;
+	while (str2[count] == 0 && count < QInt_Size)
+		count++;		 // Dem so bit 0 o dau day bit
+	int len_str = QInt_Size - count; // Do dai cua chuoi ket qua
+	char *ans = NULL;
+	if (len_str == 0) {
+		ans = (char *)malloc(sizeof(char) * 2);
+		ans[0] = '0';
+		ans[1] = '\0';
+	} else {
+		ans = (char *)malloc(sizeof(char) * (len_str + 1));
+		ans[len_str] = '\0';
+		for (int i = len_str - 1; i >= 0; i--)
+			if (str2[i + QInt_Size - len_str] == 1)
+				ans[i] = '1';
+			else
+				ans[i] = '0';
+	}
+	return ans;
 }
 
 // Nhap xuat theo YEUCAU
