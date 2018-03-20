@@ -4,6 +4,45 @@
 #include <string.h>
 
 // Ham phu tro
+void cong_1_bit(bool *bits, int size);
+void tru_1_bit(bool *bits, int size);
+void in_bit(bool *bits, int size);
+void nghich_dao_bit(bool *bits, int size);
+void doi_dau_bit(bool *bits, int size);
+bool la_chu_so(char c, int radix);
+bool la_hop_le_QInt(char *num, int radix);
+
+/* Chuyen input -> QInt
+ * cu the, input -> bit[128]
+ * bit[128] chia ra 4 sequence dai 32 bit
+ * moi sequence la mot block cua QInt
+ */
+int seq_to_int(bool *bits, int from, int to);
+void chia_2_str10(char *num);
+bool *str10_to_bit(char *num);
+// TODO chuyen string dang 2-digits va 16-digits ve bit[128]
+bool *str2_to_bit(char *num);
+bool *str16_to_bit(char *num);
+
+/* Chuyen QInt -> input
+ * cu the, doi tung block cua QInt ve sequence dai 32 bit
+ * gop 4 sequence -> bit[128]
+ * bit[128] -> input (so dang string)
+ */
+void int_to_seq(int x, bool *bits, int from, int to);
+void cong_str10(char *A, char *B);
+void nhan_2_str10(char *num);
+char *bit_to_str10(bool *bits, int size);
+// TODO chuyen bit ve dang string 2-digits
+char *bit_to_str2(bool *bit, int size);
+
+int seq_to_uint(bool *bits, int from, int to);
+
+// Dich bit
+void dich_trai_1_bit(bool *bits, int size);
+void dich_phai_1_bit(bool *bits, int size);
+
+// Ham phu tro
 void cong_1_bit(bool *bits, int size)
 {
 	if (bits[size - 1] == 0) {
@@ -271,9 +310,9 @@ char *bit_to_str10(bool *bits, int size)
 		doi_dau_bit(temp_bits, size);
 	}
 
-	// 2^10 = 1024 xap xi 10^3, 128 : 3 = 42
-	// nen so thap phan khong qua
-	// 43 chu so, lay 50 cho chac
+	// 2^10 = 1024 xap xi 10^3, 128 : 10 x 3 = 38.4
+	// nen so thap phan khong qua 39 chu so
+	// lay 50 cho dep
 	const int max_size = 50;
 
 	// xay dung num="00..01"
@@ -327,13 +366,13 @@ void ScanQInt(QInt &q)
 	printf("Nhap so nguyen lon: ");
 	scanf("%s", num);
 	bool *bits = str10_to_bit(num);
-	q = BinToDec(bits);
+	q = BinToDec_int(bits);
 	free(bits);
 }
 
 void PrintQInt(QInt q)
 {
-	bool *bits = DecToBin(q);
+	bool *bits = DecToBin_int(q);
 	printf("Xuat so nguyen lon: ");
 	char *str10 = bit_to_str10(bits, 128);
 	printf("%s\n", str10);
@@ -342,7 +381,7 @@ void PrintQInt(QInt q)
 }
 
 // Chuyen doi theo YEUCAU, mac dinh bits la 128
-bool *DecToBin(QInt q)
+bool *DecToBin_int(QInt q)
 {
 	bool *bits = (bool *)malloc(sizeof(bool) * 128);
 	for (int i = 0, y = 0; i < 4; ++i, y += 32) {
@@ -351,7 +390,7 @@ bool *DecToBin(QInt q)
 	return bits;
 }
 
-QInt BinToDec(bool *bits)
+QInt BinToDec_int(bool *bits)
 {
 	QInt x;
 	for (int i = 0, j = 0; i < 4; ++i, j += 32) {
@@ -375,7 +414,7 @@ int seq_to_uint(bool *bits, int from, int to)
 	return result;
 }
 
-char *BinToHex(bool *bits)
+char *BinToHex_int(bool *bits)
 {
 	// cu 4 bits la 1 chu so hexa
 	// 128 : 4 = 32
@@ -391,15 +430,15 @@ char *BinToHex(bool *bits)
 	return hexas;
 }
 
-char *DecToHex(QInt q)
+char *DecToHex_int(QInt q)
 {
-	bool *temp_bits = DecToBin(q);
+	bool *temp_bits = DecToBin_int(q);
 	bool bits[128];
 	for (int i = 0; i < 128; ++i) {
 		bits[i] = temp_bits[i];
 	}
 	free(temp_bits);
-	return BinToHex(bits);
+	return BinToHex_int(bits);
 }
 
 /* Xu ly toan tu + - * /
@@ -409,8 +448,8 @@ char *DecToHex(QInt q)
  */
 QInt operator+(QInt a, QInt b)
 {
-	bool *bits_1 = DecToBin(a);
-	bool *bits_2 = DecToBin(b);
+	bool *bits_1 = DecToBin_int(a);
+	bool *bits_2 = DecToBin_int(b);
 	const int size = 128;
 	bool *tong = (bool *)malloc(sizeof(bool) * (size));
 	int rememberNumber = 0; // 1 + 1 = 0 remember 1
@@ -437,7 +476,7 @@ QInt operator+(QInt a, QInt b)
 			}
 		}
 	}
-	QInt q = BinToDec(tong);
+	QInt q = BinToDec_int(tong);
 	free(bits_1);
 	free(bits_2);
 	free(tong);
@@ -447,9 +486,9 @@ QInt operator+(QInt a, QInt b)
 QInt operator-(QInt a, QInt b)
 {
 	// tru la cong voi so doi
-	bool *bits_2 = DecToBin(b);
+	bool *bits_2 = DecToBin_int(b);
 	doi_dau_bit(bits_2, 128);
-	QInt new_b = BinToDec(bits_2);
+	QInt new_b = BinToDec_int(bits_2);
 	free(bits_2);
 	return a + new_b;
 }
@@ -460,7 +499,7 @@ QInt operator-(QInt a, QInt b)
 QInt operator*(QInt a, QInt M)
 {
 	const int size = 128;
-	bool *bits_Q = DecToBin(a);
+	bool *bits_Q = DecToBin_int(a);
 	bool *bits_A = (bool *)malloc(sizeof(bool) * (size));
 	for (int i = 0; i < size; ++i) {
 		bits_A[i] = 0;
@@ -470,13 +509,13 @@ QInt operator*(QInt a, QInt M)
 	// 128 step
 	for (int i = 0; i < size; ++i) {
 		if (bits_Q[size - 1] != bit_Q0) {
-			QInt A = BinToDec(bits_A);
+			QInt A = BinToDec_int(bits_A);
 			if (bits_Q[size - 1] == 1 && bit_Q0 == 0) {
 				A = A - M;
 			} else {
 				A = A + M;
 			}
-			bool *bits_temp = DecToBin(A);
+			bool *bits_temp = DecToBin_int(A);
 			for (int j = 0; j < size; ++j) {
 				bits_A[j] = bits_temp[j];
 			}
@@ -493,7 +532,7 @@ QInt operator*(QInt a, QInt M)
 	}
 	// Ket qua cuoi cung la day bit A va Q ket hop lai
 	// nhung bo di A vi overflow
-	QInt q = BinToDec(bits_Q);
+	QInt q = BinToDec_int(bits_Q);
 	free(bits_Q);
 	free(bits_A);
 	return q;
@@ -504,8 +543,8 @@ QInt operator*(QInt a, QInt M)
 // 0  so bi chia  so chia
 QInt operator/(QInt Q, QInt M)
 {
-	bool *Q_bits = DecToBin(Q);
-	bool *M_bits = DecToBin(M);
+	bool *Q_bits = DecToBin_int(Q);
+	bool *M_bits = DecToBin_int(M);
 	// Xet dau
 	bool Q_sign = 0;
 	bool M_sign = 0;
@@ -516,7 +555,7 @@ QInt operator/(QInt Q, QInt M)
 	if (M.block[0] < 0) {
 		M_sign = 1;
 		doi_dau_bit(M_bits, QInt_Size);
-		M = BinToDec(M_bits);
+		M = BinToDec_int(M_bits);
 	}
 	free(M_bits);
 
@@ -537,7 +576,7 @@ QInt operator/(QInt Q, QInt M)
 		}
 		A_bits[QInt_Size - 1] = Q_first;
 
-		A = BinToDec(A_bits);
+		A = BinToDec_int(A_bits);
 		A = A - M;
 
 		// A < 0
@@ -548,7 +587,7 @@ QInt operator/(QInt Q, QInt M)
 			Q_bits[QInt_Size - 1] = 1;
 		}
 		free(A_bits);
-		A_bits = DecToBin(A);
+		A_bits = DecToBin_int(A);
 	}
 
 	// Xet dau ket qua
@@ -556,7 +595,7 @@ QInt operator/(QInt Q, QInt M)
 		doi_dau_bit(Q_bits, QInt_Size);
 	}
 
-	QInt q = BinToDec(Q_bits);
+	QInt q = BinToDec_int(Q_bits);
 	free(Q_bits);
 	free(A_bits);
 	return q;
@@ -567,8 +606,8 @@ QInt operator/(QInt Q, QInt M)
  */
 QInt operator&(QInt a, QInt b)
 {
-	bool *bits_1 = DecToBin(a);
-	bool *bits_2 = DecToBin(b);
+	bool *bits_1 = DecToBin_int(a);
+	bool *bits_2 = DecToBin_int(b);
 	bool *bits_3 = (bool *)malloc(sizeof(bool) * 128);
 
 	for (int i = 0; i < 128; ++i) {
@@ -578,7 +617,7 @@ QInt operator&(QInt a, QInt b)
 			bits_3[i] = 0;
 	}
 
-	QInt q = BinToDec(bits_3);
+	QInt q = BinToDec_int(bits_3);
 
 	free(bits_1);
 	free(bits_2);
@@ -588,8 +627,8 @@ QInt operator&(QInt a, QInt b)
 
 QInt operator|(QInt a, QInt b)
 {
-	bool *bits_1 = DecToBin(a);
-	bool *bits_2 = DecToBin(b);
+	bool *bits_1 = DecToBin_int(a);
+	bool *bits_2 = DecToBin_int(b);
 	bool *bits_3 = (bool *)malloc(sizeof(bool) * 128);
 
 	for (int i = 0; i < 128; ++i) {
@@ -599,7 +638,7 @@ QInt operator|(QInt a, QInt b)
 			bits_3[i] = 1;
 	}
 
-	QInt q = BinToDec(bits_3);
+	QInt q = BinToDec_int(bits_3);
 
 	free(bits_1);
 	free(bits_2);
@@ -609,8 +648,8 @@ QInt operator|(QInt a, QInt b)
 
 QInt operator^(QInt a, QInt b)
 {
-	bool *bits_1 = DecToBin(a);
-	bool *bits_2 = DecToBin(b);
+	bool *bits_1 = DecToBin_int(a);
+	bool *bits_2 = DecToBin_int(b);
 	bool *bits_3 = (bool *)malloc(sizeof(bool) * 128);
 
 	for (int i = 0; i < 128; ++i) {
@@ -620,7 +659,7 @@ QInt operator^(QInt a, QInt b)
 			bits_3[i] = 1;
 	}
 
-	QInt q = BinToDec(bits_3);
+	QInt q = BinToDec_int(bits_3);
 
 	free(bits_1);
 	free(bits_2);
@@ -630,9 +669,9 @@ QInt operator^(QInt a, QInt b)
 
 QInt operator~(QInt a)
 {
-	bool *bits_1 = DecToBin(a);
+	bool *bits_1 = DecToBin_int(a);
 	nghich_dao_bit(bits_1, 128);
-	QInt q = BinToDec(bits_1);
+	QInt q = BinToDec_int(bits_1);
 	free(bits_1);
 	return q;
 }
@@ -658,7 +697,7 @@ void dich_phai_1_bit(bool *bits, int size)
 QInt operator<<(QInt a, int count)
 {
 	const int size = 128;
-	bool *bits = DecToBin(a);
+	bool *bits = DecToBin_int(a);
 	if (count >= size) {
 		for (int i = 0; i < size; ++i) {
 			bits[i] = 0;
@@ -668,7 +707,7 @@ QInt operator<<(QInt a, int count)
 			dich_trai_1_bit(bits, size);
 		}
 	}
-	QInt q = BinToDec(bits);
+	QInt q = BinToDec_int(bits);
 	free(bits);
 	return q;
 }
@@ -676,7 +715,7 @@ QInt operator<<(QInt a, int count)
 QInt operator>>(QInt a, int count)
 {
 	const int size = 128;
-	bool *bits = DecToBin(a);
+	bool *bits = DecToBin_int(a);
 	if (count >= size) {
 		for (int i = 1; i < size; ++i) {
 			bits[i] = bits[0];
@@ -686,43 +725,43 @@ QInt operator>>(QInt a, int count)
 			dich_phai_1_bit(bits, size);
 		}
 	}
-	QInt q = BinToDec(bits);
+	QInt q = BinToDec_int(bits);
 	free(bits);
 	return q;
 }
 
 // Cac ham kiem tra
-void test_input_convert()
+void test_input_convert_int()
 {
-	printf("Test input output\n");
+	printf("Test input output int\n");
 	QInt q;
 	ScanQInt(q);
 	PrintQInt(q);
 
-	printf("DecToBin\n");
-	bool *bits = DecToBin(q);
+	printf("DecToBin_int\n");
+	bool *bits = DecToBin_int(q);
 	in_bit(bits, 128);
 
-	printf("BinToDec\n");
-	QInt q_2 = BinToDec(bits);
+	printf("BinToDec_int\n");
+	QInt q_2 = BinToDec_int(bits);
 	PrintQInt(q_2);
 
-	printf("BinToHex\n");
-	char *s1 = BinToHex(bits);
+	printf("BinToHex_int\n");
+	char *s1 = BinToHex_int(bits);
 	printf("%s\n", s1);
 	free(s1);
 
-	printf("DecToHex\n");
-	char *s2 = DecToHex(q);
+	printf("DecToHex_int\n");
+	char *s2 = DecToHex_int(q);
 	printf("%s\n", s2);
 	free(s2);
 
 	free(bits);
 }
 
-void test_cong_tru()
+void test_cong_tru_int()
 {
-	printf("Test cong tru\n");
+	printf("Test cong tru int\n");
 	QInt q_1, q_2;
 	ScanQInt(q_1);
 	ScanQInt(q_2);
@@ -736,9 +775,9 @@ void test_cong_tru()
 	PrintQInt(q_4);
 }
 
-void test_nhan_chia()
+void test_nhan_chia_int()
 {
-	printf("Test nhan chia\n");
+	printf("Test nhan chia int\n");
 	QInt q_1, q_2;
 	ScanQInt(q_1);
 	ScanQInt(q_2);
@@ -752,9 +791,9 @@ void test_nhan_chia()
 	PrintQInt(q_4);
 }
 
-void test_bit_operator()
+void test_bit_operator_int()
 {
-	printf("Test bit operator\n");
+	printf("Test bit operator int\n");
 	QInt q_1, q_2;
 	ScanQInt(q_1);
 	ScanQInt(q_2);
