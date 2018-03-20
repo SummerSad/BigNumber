@@ -149,7 +149,9 @@ bool *lay_Phan_ThapPhan(int so_mu_int, bool *bits_nguyen,
 	}
 
 	if (so_mu_int == 0) {
-		memcpy(bits_thaphan, bits_thapphan_BD, Qfloat_Bits_ThapPhan);
+		for (int i = 0; i < Qfloat_Bits_ThapPhan; ++i) {
+			bits_thaphan[i] = bits_thapphan_BD[i];
+		}
 	} else if (so_mu_int > 0) {
 		int i = 0;
 		int j = Qfloat_MAX_STR2 - so_mu_int;
@@ -188,8 +190,6 @@ void int_to_bi(int x, bool *bits, int bits_size)
 // chuyen int qua biased
 bool *int_to_biased(int so_mu_int)
 {
-	bool *biased = (bool *)malloc(sizeof(bool) * Qfloat_Bits_Mu);
-
 	// Dua so_mu_int ve binary
 	bool *int_bi = (bool *)malloc(sizeof(bool) * Qfloat_Bits_Mu);
 	int_to_bi(so_mu_int, int_bi, Qfloat_Bits_Mu);
@@ -200,7 +200,7 @@ bool *int_to_biased(int so_mu_int)
 		biased_0[i] = 1;
 	}
 
-	biased = cong_bits(int_bi, biased_0, Qfloat_Bits_Mu);
+	bool *biased = cong_bits(int_bi, biased_0, Qfloat_Bits_Mu);
 
 	free(biased_0);
 	free(int_bi);
@@ -307,7 +307,6 @@ bool *DecToBin_float(Qfloat q)
 // Chuyen so biased sang bits so bu 2
 bool *biased_to_bits(bool *biased, int size)
 {
-	bool *bits = (bool *)malloc(sizeof(bool) * size);
 	// Thiet lap so 0 biased
 	bool *biased_0 = (bool *)malloc(sizeof(bool) * size);
 	biased_0[0] = 0;
@@ -315,7 +314,7 @@ bool *biased_to_bits(bool *biased, int size)
 		biased_0[i] = 1;
 	}
 
-	bits = tru_bits(biased, biased_0, size);
+	bool *bits = tru_bits(biased, biased_0, size);
 
 	free(biased_0);
 	return bits;
