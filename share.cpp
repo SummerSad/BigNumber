@@ -48,6 +48,15 @@ void doi_dau_bit(bool *bits, int size)
 	cong_1_bit(bits, size);
 }
 
+bool *copy_bits(bool *bits, int size)
+{
+	bool *copy = (bool *)malloc(sizeof(bool) * (size));
+	for (int i = 0; i < size; ++i) {
+		copy[i] = bits[i];
+	}
+	return copy;
+}
+
 // radix la co so (10, 2, 16)
 bool la_chu_so(char c, int radix)
 {
@@ -167,8 +176,53 @@ bool *cong_bits(bool *bits_1, bool *bits_2, int size)
 bool *tru_bits(bool *bits_1, bool *bits_2, int size)
 {
 	// tru la cong voi so doi
-	doi_dau_bit(bits_2, size);
-	return cong_bits(bits_1, bits_2, size);
+	bool *temp_bits_2 = copy_bits(bits_2, size);
+	doi_dau_bit(temp_bits_2, size);
+	bool *hieu = cong_bits(bits_1, temp_bits_2, size);
+	free(temp_bits_2);
+	return hieu;
+}
+
+bool *nhan_bits(bool *bits_Q, bool *bits_M, int size)
+{
+	bool *Q_copy = copy_bits(bits_Q, size);
+	bool *bits_A = (bool *)malloc(sizeof(bool) * (size));
+	for (int i = 0; i < size; ++i) {
+		bits_A[i] = 0;
+	}
+
+	bool bit_Q0 = 0;
+	bool *temp;
+
+	// many size many step
+	for (int i = 0; i < size; ++i) {
+		if (Q_copy[size - 1] != bit_Q0) {
+			if (Q_copy[size - 1] == 1 && bit_Q0 == 0) {
+				temp = tru_bits(bits_A, bits_M, size);
+
+			} else {
+				temp = cong_bits(bits_A, bits_M, size);
+			}
+
+			free(bits_A);
+			// tro con tro bits_A vao temp
+			bits_A = temp;
+		}
+
+		// dich phai bit
+		bool last_A = bits_A[size - 1];
+		bit_Q0 = Q_copy[size - 1];
+		for (int j = size - 1; j > 0; --j) {
+			bits_A[j] = bits_A[j - 1];
+			Q_copy[j] = Q_copy[j - 1];
+		}
+		Q_copy[0] = last_A;
+	}
+
+	// Ket qua cuoi cung la day bit A va Q ket hop lai
+	// nhung bo di A vi overflow
+	free(bits_A);
+	return Q_copy;
 }
 
 // str10 "123456" or "-1234"

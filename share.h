@@ -5,6 +5,7 @@ void cong_1_bit(bool *bits, int size);
 void in_bit(bool *bits, int size);
 void nghich_dao_bit(bool *bits, int size);
 void doi_dau_bit(bool *bits, int size);
+bool *copy_bits(bool *bits, int size);
 
 // radix la co so (10, 2, 16)
 bool la_chu_so(char c, int radix);
@@ -18,9 +19,11 @@ int seq_to_uint(bool *bits, int from, int to);
 void dich_trai_1_bit(bool *bits, int size);
 void dich_phai_1_bit(bool *bits, int size);
 
-// Cong tru 2 bits
+// Tinh toan 2 bits
 bool *cong_bits(bool *bits_1, bool *bits_2, int size);
 bool *tru_bits(bool *bits_1, bool *bits_2, int size);
+bool *nhan_bits(bool *bits_Q, bool *bits_M, int size);
+bool *chia_bits(bool bits_Q, bool *bits_M, int size);
 
 // str10
 void cong_str10(char *A, char *B);

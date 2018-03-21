@@ -173,46 +173,16 @@ QInt operator-(QInt a, QInt b)
 // nhan bang thuat toan booth
 // A  Q  Q0  M
 // 0  a  0   .
-QInt operator*(QInt a, QInt M)
+QInt operator*(QInt Q, QInt M)
 {
-	const int size = 128;
-	bool *bits_Q = DecToBin_int(a);
-	bool *bits_A = (bool *)malloc(sizeof(bool) * (size));
-	for (int i = 0; i < size; ++i) {
-		bits_A[i] = 0;
-	}
-	bool bit_Q0 = 0;
-
-	// 128 step
-	for (int i = 0; i < size; ++i) {
-		if (bits_Q[size - 1] != bit_Q0) {
-			QInt A = BinToDec_int(bits_A);
-			if (bits_Q[size - 1] == 1 && bit_Q0 == 0) {
-				A = A - M;
-			} else {
-				A = A + M;
-			}
-			bool *bits_temp = DecToBin_int(A);
-			for (int j = 0; j < size; ++j) {
-				bits_A[j] = bits_temp[j];
-			}
-			free(bits_temp);
-		}
-		// dich phai bit
-		bool last_A = bits_A[size - 1];
-		bit_Q0 = bits_Q[size - 1];
-		for (int j = size - 1; j > 0; --j) {
-			bits_A[j] = bits_A[j - 1];
-			bits_Q[j] = bits_Q[j - 1];
-		}
-		bits_Q[0] = last_A;
-	}
-	// Ket qua cuoi cung la day bit A va Q ket hop lai
-	// nhung bo di A vi overflow
-	QInt q = BinToDec_int(bits_Q);
-	free(bits_Q);
-	free(bits_A);
-	return q;
+	bool *bits_1 = DecToBin_int(Q);
+	bool *bits_2 = DecToBin_int(M);
+	bool *tich = nhan_bits(bits_1, bits_2, QInt_Size);
+	QInt result = BinToDec_int(tich);
+	free(bits_1);
+	free(bits_2);
+	free(tich);
+	return result;
 }
 
 // Chia bang thuat toan chia khong dau

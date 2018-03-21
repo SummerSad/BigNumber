@@ -36,7 +36,7 @@ char *DecToHex_int(QInt q);
  */
 QInt operator+(QInt a, QInt b);
 QInt operator-(QInt a, QInt b);
-QInt operator*(QInt a, QInt M);
+QInt operator*(QInt Q, QInt M);
 QInt operator/(QInt Q, QInt M);
 
 /* YEUCAU Xu ly toan tu AND (&), OR(|), XOR(^), NOT(~)
