@@ -7,7 +7,7 @@
 #include <string.h>
 
 char **chia_thanh_toan_hang(char *line, int &count);
-bool *tinh_toan_2_ngoi(char **str, bool *bits_1, bool *bits_3);
+bool *tinh_toan_2_ngoi_int(char **str, bool *bits_1, bool *bits_3);
 
 void file_qint(char *input, char *output)
 {
@@ -37,7 +37,8 @@ void file_qint(char *input, char *output)
 				bits_3 = str16_to_bit(str[3], QInt_Size);
 			}
 
-			bool *bits_kq = tinh_toan_2_ngoi(str, bits_1, bits_3);
+			bool *bits_kq =
+			    tinh_toan_2_ngoi_int(str, bits_1, bits_3);
 			char *chars_kq;
 			if (strcmp(str[0], "10") == 0) {
 				chars_kq = bit_to_str10(bits_kq, QInt_Size);
@@ -97,7 +98,7 @@ char **chia_thanh_toan_hang(char *line, int &count)
 	return str;
 }
 
-bool *tinh_toan_2_ngoi(char **str, bool *bits_1, bool *bits_3)
+bool *tinh_toan_2_ngoi_int(char **str, bool *bits_1, bool *bits_3)
 {
 	bool *bits_kq;
 	if (strcmp(str[2], "+") == 0) {
