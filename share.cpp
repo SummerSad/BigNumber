@@ -245,8 +245,7 @@ char *bit_to_str10(bool *bits, int size)
 		doi_dau_bit(temp_bits, size);
 	}
 
-	// 2^10 = 1024 xap xi 10^3,
-	// 2^15 xap xi 10^4.5
+	// 2^10 = 1024 xap xi 10^3
 	const int max_size = (int)((size * 3) / 10) + 1;
 
 	// xay dung num="00..01"
@@ -292,4 +291,35 @@ char *bit_to_str10(bool *bits, int size)
 	strcpy(new_num + laSoAm, num + i);
 	free(num);
 	return new_num;
+}
+
+// Doi string 10-digits ra bits[128]
+bool *str10_to_bit(char *num, int size)
+{
+	bool *bits = (bool *)malloc(sizeof(bool) * size);
+	char *temp_num = (char *)malloc(sizeof(char) * (strlen(num) + 1));
+	temp_num[strlen(num)] = '\0';
+	strcpy(temp_num, num);
+	int i = 0;
+	int laSoAm = 0;
+	if (temp_num[i] == '-' || temp_num[i] == '+') {
+		if (temp_num[i] == '-') {
+			laSoAm = 1;
+		}
+		++i;
+	}
+
+	for (i = size - 1; i >= 0; --i) {
+		if ((temp_num[strlen(temp_num) - 1] - '0') % 2 == 0) {
+			bits[i] = 0;
+		} else {
+			bits[i] = 1;
+		}
+		chia_2_str10(temp_num);
+	}
+	if (laSoAm) {
+		doi_dau_bit(bits, size);
+	}
+	free(temp_num);
+	return bits;
 }

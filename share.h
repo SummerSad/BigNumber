@@ -27,5 +27,6 @@ void cong_str10(char *A, char *B);
 void nhan_2_str10(char *num);
 void chia_2_str10(char *num);
 char *bit_to_str10(bool *bits, int size);
+bool *str10_to_bit(char *num, int size);
 
 #endif

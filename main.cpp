@@ -1,11 +1,15 @@
 #include "qfloat.h"
 #include "qint.h"
 #include "share.h"
+#include "xulyfile.h"
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 
 int main()
 {
-	testScanQfloat();
+	char s[] = "input";
+	char t[] = "output";
+	file_qint(s, t);
 	return 0;
 }

@@ -4,13 +4,6 @@
 #include <stdlib.h>
 #include <string.h>
 
-bool la_hop_le_QInt(char *num, int radix);
-bool *str10_to_bit(char *num);
-bool *str2_to_bit(char *num);
-// TODO str16
-bool *str16_to_bit(char *num);
-char *bit_to_str2(bool *bit, int size);
-
 bool la_hop_le_QInt(char *num, int radix)
 {
 	if (!num || strlen(num) <= 0)
@@ -27,64 +20,24 @@ bool la_hop_le_QInt(char *num, int radix)
 	return 1;
 }
 
-// Doi string 10-digits ra bits[128]
-bool *str10_to_bit(char *num)
+bool *str2_to_bit(char *num, int size)
 {
-	const int size = 128;
-	bool *bits = (bool *)malloc(sizeof(bool) * size);
-	if (!la_hop_le_QInt(num, 10)) {
-		printf("Input khong hop le\n");
-		for (int i = 0; i < size; ++i) {
-			bits[i] = 0;
-		}
-		return bits;
-	}
-
-	char *temp_num = (char *)malloc(sizeof(char) * (strlen(num) + 1));
-	temp_num[strlen(num)] = '\0';
-	strcpy(temp_num, num);
-	int i = 0;
-	int laSoAm = 0;
-	if (temp_num[i] == '-' || temp_num[i] == '+') {
-		if (temp_num[i] == '-') {
-			laSoAm = 1;
-		}
-		++i;
-	}
-
-	for (i = size - 1; i >= 0; --i) {
-		if ((temp_num[strlen(temp_num) - 1] - '0') % 2 == 0) {
-			bits[i] = 0;
-		} else {
-			bits[i] = 1;
-		}
-		chia_2_str10(temp_num);
-	}
-	if (laSoAm) {
-		doi_dau_bit(bits, size);
-	}
-	free(temp_num);
-	return bits;
-}
-
-bool *str2_to_bit(char *num)
-{
-	bool *ans = (bool *)malloc(sizeof(bool) * QInt_Size);
+	bool *ans = (bool *)malloc(sizeof(bool) * size);
 	int len = strlen(num); // Dem do dai cua chuoi
-	for (int i = QInt_Size - 1; i >= QInt_Size - len; i--)
-		ans[i] = num[len + i - QInt_Size] -
+	for (int i = size - 1; i >= size - len; i--)
+		ans[i] = num[len + i - size] -
 			 '0'; // Sao chep chuoi vao cuoi day bit
-	for (int i = 0; i < QInt_Size - len; i++)
+	for (int i = 0; i < size - len; i++)
 		ans[i] = 0; // Dat cac bit con trong la 0
 	return ans;
 }
 
-char *bit_to_str2(bool *str2)
+char *bit_to_str2(bool *str2, int size)
 {
 	int count = 0;
-	while (str2[count] == 0 && count < QInt_Size)
-		count++;		 // Dem so bit 0 o dau day bit
-	int len_str = QInt_Size - count; // Do dai cua chuoi ket qua
+	while (str2[count] == 0 && count < size)
+		count++;	    // Dem so bit 0 o dau day bit
+	int len_str = size - count; // Do dai cua chuoi ket qua
 	char *ans = NULL;
 	if (len_str == 0) {
 		ans = (char *)malloc(sizeof(char) * 2);
@@ -94,12 +47,22 @@ char *bit_to_str2(bool *str2)
 		ans = (char *)malloc(sizeof(char) * (len_str + 1));
 		ans[len_str] = '\0';
 		for (int i = len_str - 1; i >= 0; i--)
-			if (str2[i + QInt_Size - len_str] == 1)
+			if (str2[i + size - len_str] == 1)
 				ans[i] = '1';
 			else
 				ans[i] = '0';
 	}
 	return ans;
+}
+
+bool *str16_to_bit(char *num, int size)
+{
+	return NULL;
+}
+
+char *bit_to_str16(bool *bits, int size)
+{
+	return NULL;
 }
 
 // Nhap xuat theo YEUCAU
@@ -109,7 +72,16 @@ void ScanQInt(QInt &q)
 	char num[max_size + 1];
 	printf("Nhap so nguyen lon: ");
 	scanf("%s", num);
-	bool *bits = str10_to_bit(num);
+	bool *bits;
+	if (!la_hop_le_QInt(num, 10)) {
+		printf("Input khong hop le\n");
+		bits = (bool *)malloc(sizeof(bool) * QInt_Size);
+		for (int i = 0; i < QInt_Size; ++i) {
+			bits[i] = 0;
+		}
+	} else {
+		bits = str10_to_bit(num, QInt_Size);
+	}
 	q = BinToDec_int(bits);
 	free(bits);
 }
