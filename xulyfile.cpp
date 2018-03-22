@@ -8,7 +8,7 @@
 
 char **chia_thanh_toan_hang(char *line, int &count);
 bool *tinh_toan_2_ngoi_int(char **str, bool *bits_1, bool *bits_3);
-char *chuyen_co_so(char **str, bool *bits);
+char *chuyen_co_so_int(char **str, bool *bits);
 
 void file_qint(char *input, char *output)
 {
@@ -94,7 +94,7 @@ void file_qint(char *input, char *output)
 				QInt q_kq = ~q;
 				bits_kq = DecToBin_int(q_kq);
 			} else {
-				chars_kq = chuyen_co_so(str, bits);
+				chars_kq = chuyen_co_so_int(str, bits);
 			}
 			if (bits)
 				free(bits);
@@ -165,7 +165,7 @@ bool *tinh_toan_2_ngoi_int(char **str, bool *bits_1, bool *bits_3)
 	return DecToBin_int(q_kq);
 }
 
-char *chuyen_co_so(char **str, bool *bits)
+char *chuyen_co_so_int(char **str, bool *bits)
 {
 	if (strcmp(str[1], "10") == 0) {
 		return bit_to_str10(bits, QInt_Size);
