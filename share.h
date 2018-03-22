@@ -23,7 +23,6 @@ void dich_phai_1_bit(bool *bits, int size);
 bool *cong_bits(bool *bits_1, bool *bits_2, int size);
 bool *tru_bits(bool *bits_1, bool *bits_2, int size);
 bool *nhan_bits(bool *bits_Q, bool *bits_M, int size);
-bool *chia_bits(bool bits_Q, bool *bits_M, int size);
 
 // str10
 void cong_str10(char *A, char *B);

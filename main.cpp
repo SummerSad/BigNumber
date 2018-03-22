@@ -8,5 +8,8 @@
 
 int main()
 {
+	char s[] = "input";
+	char t[] = "output";
+	file_qint(s, t);
 	return 0;
 }
