@@ -6,6 +6,7 @@ all:
 	$(CC) $(CFLAGS) $(SRCS)
 
 mem:
+	$(CC) $(CFLAGS) $(SRCS)
 	drmemory.exe a.exe
 
 clean:
