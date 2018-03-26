@@ -17,7 +17,7 @@ bool *str2_to_bit(char *num, int size);
 char *bit_to_str2(bool *bits, int size);
 // TODO str16
 bool *str16_to_bit(char *num, int size);
-char *bit_to_str16(bool *bits, int size);
+char *bit_to_str16(bool *bits);
 
 // YEUCAU: Nhap xuat
 void ScanQInt(QInt &q);

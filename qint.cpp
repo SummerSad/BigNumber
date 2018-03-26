@@ -57,12 +57,109 @@ char *bit_to_str2(bool *str2, int size)
 
 bool *str16_to_bit(char *num, int size)
 {
-	return NULL;
+	bool *bits = (bool *)malloc(sizeof(bool) * size);
+	int len = strlen(num);
+	int temp = size - 1;
+	for (int i = len - 1; i >= 0 && temp >= 0; --i) {
+		if (num[i] == '0') {
+			bits[temp - 3] = 0;
+			bits[temp - 2] = 0;
+			bits[temp - 1] = 0;
+			bits[temp] = 0;
+		} else if (num[i] == '1') {
+			bits[temp - 3] = 0;
+			bits[temp - 2] = 0;
+			bits[temp - 1] = 0;
+			bits[temp] = 1;
+		} else if (num[i] == '2') {
+			bits[temp - 3] = 0;
+			bits[temp - 2] = 0;
+			bits[temp - 1] = 1;
+			bits[temp] = 0;
+		} else if (num[i] == '3') {
+			bits[temp - 3] = 0;
+			bits[temp - 2] = 0;
+			bits[temp - 1] = 1;
+			bits[temp] = 1;
+		} else if (num[i] == '4') {
+			bits[temp - 3] = 0;
+			bits[temp - 2] = 1;
+			bits[temp - 1] = 0;
+			bits[temp] = 0;
+		} else if (num[i] == '5') {
+			bits[temp - 3] = 0;
+			bits[temp - 2] = 1;
+			bits[temp - 1] = 0;
+			bits[temp] = 1;
+		} else if (num[i] == '6') {
+			bits[temp - 3] = 0;
+			bits[temp - 2] = 1;
+			bits[temp - 1] = 1;
+			bits[temp] = 0;
+		} else if (num[i] == '7') {
+			bits[temp - 3] = 0;
+			bits[temp - 2] = 1;
+			bits[temp - 1] = 1;
+			bits[temp] = 1;
+		} else if (num[i] == '8') {
+			bits[temp - 3] = 1;
+			bits[temp - 2] = 0;
+			bits[temp - 1] = 0;
+			bits[temp] = 0;
+		} else if (num[i] == '9') {
+			bits[temp - 3] = 1;
+			bits[temp - 2] = 0;
+			bits[temp - 1] = 0;
+			bits[temp] = 1;
+		} else if (num[i] == 'A') {
+			bits[temp - 3] = 1;
+			bits[temp - 2] = 0;
+			bits[temp - 1] = 1;
+			bits[temp] = 0;
+		} else if (num[i] == 'B') {
+			bits[temp - 3] = 1;
+			bits[temp - 2] = 0;
+			bits[temp - 1] = 1;
+			bits[temp] = 1;
+		} else if (num[i] == 'C') {
+			bits[temp - 3] = 1;
+			bits[temp - 2] = 1;
+			bits[temp - 1] = 0;
+			bits[temp] = 0;
+		} else if (num[i] == 'D') {
+			bits[temp - 3] = 1;
+			bits[temp - 2] = 1;
+			bits[temp - 1] = 0;
+			bits[temp] = 1;
+		} else if (num[i] == 'E') {
+			bits[temp - 3] = 1;
+			bits[temp - 2] = 1;
+			bits[temp - 1] = 1;
+			bits[temp] = 0;
+		} else if (num[i] == 'F') {
+			bits[temp - 3] = 1;
+			bits[temp - 2] = 1;
+			bits[temp - 1] = 1;
+			bits[temp] = 1;
+		}
+		temp -= 4;
+	}
+
+	// cac bit con trong
+	if (temp >= 0) {
+		for (int i = 0; i <= temp; ++i) {
+			bits[i] = 0;
+		}
+	}
+
+	return bits;
 }
 
-char *bit_to_str16(bool *bits, int size)
+char *bit_to_str16(bool *bits)
 {
-	return NULL;
+	QInt q = BinToDec_int(bits);
+	char *hexas = DecToHex_int(q);
+	return hexas;
 }
 
 // Nhap xuat theo YEUCAU

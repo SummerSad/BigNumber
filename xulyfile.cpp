@@ -78,7 +78,7 @@ void file_qint(char *input, char *output)
 			} else if (strcmp(str[0], "2") == 0) {
 				chars_kq = bit_to_str2(bits_kq, QInt_Size);
 			} else if (strcmp(str[0], "16") == 0) {
-				chars_kq = bit_to_str16(bits_kq, QInt_Size);
+				chars_kq = bit_to_str16(bits_kq);
 			}
 		} else if (count == 3) {
 			bool *bits = NULL;
@@ -172,5 +172,5 @@ char *chuyen_co_so_int(char **str, bool *bits)
 	} else if (strcmp(str[1], "2") == 0) {
 		return bit_to_str2(bits, QInt_Size);
 	}
-	return bit_to_str16(bits, QInt_Size);
+	return bit_to_str16(bits);
 }
