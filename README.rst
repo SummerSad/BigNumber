@@ -35,3 +35,15 @@ Số chấm động lưu dưới dạng dãy 128 bits:
         {
         int block[4];
         };
+
+Sử dụng
+=======
+
+Compile ::
+
+        make
+
+Run ::
+
+        1612180_1612628_1612403.exe int file_input file_output
+        1612180_1612628_1612403.exe float file_input file_output
