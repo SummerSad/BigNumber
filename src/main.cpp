@@ -6,11 +6,19 @@
 #include <stdlib.h>
 #include <string.h>
 
-int main()
+int main(int argc, char *argv[])
 {
-	char s[] = "input";
-	char t[] = "output";
-	file_qfloat(s, t);
-	// testCongTruNhanChiaQfloat();
+	if (argc != 4 ||
+	    (strcmp(argv[1], "int") != 0 && strcmp(argv[1], "float")) != 0) {
+		printf("Nhap lai theo cau truc\n");
+		printf("a int file_input file_output\n");
+		printf("a float file_input file_output\n");
+		return 0;
+	}
+	if (strcmp(argv[1], "int") == 0) {
+		file_qint(argv[2], argv[3]);
+	} else if (strcmp(argv[1], "float") == 0) {
+		file_qfloat(argv[2], argv[3]);
+	}
 	return 0;
 }

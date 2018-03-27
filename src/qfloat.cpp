@@ -590,6 +590,18 @@ int str10_to_int(char *num)
 // Chuyen Qfloat dang bit sang chuoi co so 10
 char *Qfloat_bit_to_str10(bool *bits)
 {
+	// Kiem tra so 0
+	bool laSo0 = true;
+	for (int i = 0; i < Qfloat_bits_size - 1; ++i) {
+		if (bits[i] == 1)
+			laSo0 = false;
+	}
+	if (laSo0) {
+		char *so0 = (char *)malloc(sizeof(char) * 2);
+		so0[0] = '0';
+		so0[1] = '\0';
+		return so0;
+	}
 
 	// Kiem tra so am
 	int laSoAm = 0;
@@ -643,22 +655,11 @@ void PrintQfloat(Qfloat q)
 {
 
 	printf("Xuat so thuc lon: ");
-	// Xet so 0
-	bool laSo0 = true;
-	for (int i = 0; i < 3; ++i) {
-		if (q.block[i] != 0) {
-			laSo0 = false;
-		}
-	}
-	if (laSo0 && (q.block[3] == 0 || q.block[3] == 1)) {
-		printf("0\n");
-	} else {
-		bool *bits = DecToBin_float(q);
-		char *str10 = Qfloat_bit_to_str10(bits);
-		printf("%s\n", str10);
-		free(bits);
-		free(str10);
-	}
+	bool *bits = DecToBin_float(q);
+	char *str10 = Qfloat_bit_to_str10(bits);
+	printf("%s\n", str10);
+	free(bits);
+	free(str10);
 }
 
 bool Qfloat_bang_0(Qfloat x)
@@ -713,26 +714,25 @@ Qfloat operator*(Qfloat x, Qfloat y)
 	char *x_thapphan = chuyen_thaphan_bits(x_bits, -1);
 	char *y_thapphan = chuyen_thaphan_bits(y_bits, -1);
 
-	// chuyen x_thapphan sang day bit
-	bool *x_thapphan_bits = str10_to_bit(x_thapphan, Qfloat_MAX_STR2);
+	// chuyen x_thapphan sang day bit, lay 1000 cho du lon
+	int max_size = 1000;
+	bool *x_thapphan_bits = str10_to_bit(x_thapphan, max_size);
 	free(x_thapphan);
 
 	// chuyen y_thapphan sang day bit
-	bool *y_thapphan_bits = str10_to_bit(y_thapphan, Qfloat_MAX_STR2);
+	bool *y_thapphan_bits = str10_to_bit(y_thapphan, max_size);
 	free(y_thapphan);
 
-	bool *dinh_tri =
-	    nhan_bits(x_thapphan_bits, y_thapphan_bits, Qfloat_MAX_STR2);
+	bool *dinh_tri = nhan_bits(x_thapphan_bits, y_thapphan_bits, max_size);
 
 	// chuyen dinh tri thanh char
-	char *dinh_tri_char = bit_to_str10(dinh_tri, Qfloat_MAX_STR2);
+	char *dinh_tri_char = bit_to_str10(dinh_tri, max_size);
 	free(dinh_tri);
 
-	dinh_tri = (bool *)malloc(sizeof(bool) * Qfloat_MAX_STR2);
-	// dinh_tri[Qfloat_MAX_STR2] = '\0';
+	dinh_tri = (bool *)malloc(sizeof(bool) * max_size);
 	// chuyen phan thap phan char -> bit
 	int d;
-	for (int i = 0; i < Qfloat_MAX_STR2; ++i) {
+	for (int i = 0; i < max_size; ++i) {
 		d = 0;
 		for (int j = strlen(dinh_tri_char) - 1; j >= 0; --j) {
 			int multi = (dinh_tri_char[j] - '0') * 2 + d;
