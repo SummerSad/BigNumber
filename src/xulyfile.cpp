@@ -1,4 +1,5 @@
 #include "xulyfile.h"
+#include "qfloat.h"
 #include "qint.h"
 #include "share.h"
 #include <ctype.h>
@@ -9,6 +10,8 @@
 char **chia_thanh_toan_hang(char *line, int &count);
 bool *tinh_toan_2_ngoi_int(char **str, bool *bits_1, bool *bits_3);
 char *chuyen_co_so_int(char **str, bool *bits);
+
+bool *tinh_toan_2_ngoi_float(char **str, bool *bits_1, bool *bits_3);
 
 void file_qint(char *input, char *output)
 {
@@ -173,4 +176,75 @@ char *chuyen_co_so_int(char **str, bool *bits)
 		return bit_to_str2(bits, QInt_Size);
 	}
 	return bit_to_str16(bits);
+}
+
+void file_qfloat(char *input, char *output)
+{
+	FILE *f_in = fopen(input, "r");
+	if (!f_in) {
+		printf("Khong ton tai file %s\n", input);
+		return;
+	}
+	FILE *f_out = fopen(output, "w");
+	const int MAX = 200;
+	char line[MAX];
+	while (fgets(line, MAX, f_in)) {
+		int count;
+		char **str = chia_thanh_toan_hang(line, count);
+		bool *bits_kq = NULL;
+		char *chars_kq = NULL;
+		// o1 o2 o3 o4
+		if (count == 4) {
+			bool *bits_1 = NULL;
+			bool *bits_3 = NULL;
+			if (strcmp(str[0], "10") == 0) {
+				bits_1 = float_str10_to_bit(str[1]);
+				bits_3 = float_str10_to_bit(str[3]);
+			}
+			bits_kq = tinh_toan_2_ngoi_float(str, bits_1, bits_3);
+			if (bits_1)
+				free(bits_1);
+			if (bits_3)
+				free(bits_3);
+
+			// Tra ve char * lay ket qua
+			if (strcmp(str[0], "10") == 0) {
+				chars_kq = Qfloat_bit_to_str10(bits_kq);
+			}
+		}
+
+		fprintf(f_out, "%s\n", chars_kq);
+
+		// free memory
+		if (bits_kq)
+			free(bits_kq);
+		if (chars_kq)
+			free(chars_kq);
+		for (int i = 0; i < count; ++i) {
+			free(str[i]);
+		}
+		if (str)
+			free(str);
+	}
+
+	fclose(f_in);
+	fclose(f_out);
+}
+
+// 10 1.25 / 0.05
+bool *tinh_toan_2_ngoi_float(char **str, bool *bits_1, bool *bits_3)
+{
+	Qfloat q_1 = BinToDec_float(bits_1);
+	Qfloat q_3 = BinToDec_float(bits_3);
+	Qfloat q_kq;
+	if (strcmp(str[2], "+") == 0) {
+		q_kq = q_1 + q_3;
+	} else if (strcmp(str[2], "-") == 0) {
+		q_kq = q_1 - q_3;
+	} else if (strcmp(str[2], "*") == 0) {
+		q_kq = q_1 * q_3;
+	} else if (strcmp(str[2], "/") == 0) {
+		q_kq = q_1 / q_3;
+	}
+	return DecToBin_float(q_kq);
 }

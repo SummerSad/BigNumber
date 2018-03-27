@@ -47,3 +47,7 @@ Qfloat operator/(Qfloat, Qfloat);
 
 void testScanQfloat();
 void testCongTruNhanChiaQfloat();
+
+// Xu ly string
+bool *float_str10_to_bit(char *num);
+char *Qfloat_bit_to_str10(bool *bits);

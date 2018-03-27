@@ -14,14 +14,12 @@ int lay_So_Mu_INT(bool *bits_nguyen, bool *bits_thapphan_BD);
 void int_to_bi(int x, bool *bits, int bits_size);
 bool *int_to_biased(int so_mu_int);
 bool *bits_so_cham_dong(bool laSoAm, bool *so_mu_biased, bool *bits_thapphan);
-bool *float_str10_to_bit(char *num);
 
 bool *biased_to_bits(bool *biased, int size);
 char *chuyen_so_mu_biased(bool *bits);
 char *chuyen_nguyen_bits(bool *bits, int so_mu);
 void chia_2_str10_thapphan(char *num, int size);
 int str10_to_int(char *num);
-char *Qfloat_bit_to_str10(bool *bits);
 
 bool *lay_bits(bool *bits, int from, int to);
 int sosanh_bits(bool *a_bits, bool *b_bits, int size);

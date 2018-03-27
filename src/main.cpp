@@ -8,11 +8,9 @@
 
 int main()
 {
-	/*
 	char s[] = "input";
 	char t[] = "output";
-	file_qint(s, t);
-	*/
-	testCongTruNhanChiaQfloat();
+	file_qfloat(s, t);
+	// testCongTruNhanChiaQfloat();
 	return 0;
 }
