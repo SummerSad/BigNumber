@@ -289,59 +289,13 @@ QInt operator/(QInt Q, QInt M)
 {
 	bool *Q_bits = DecToBin_int(Q);
 	bool *M_bits = DecToBin_int(M);
-	// Xet dau
-	bool Q_sign = 0;
-	bool M_sign = 0;
-	if (Q.block[0] < 0) {
-		Q_sign = 1;
-		doi_dau_bit(Q_bits, QInt_Size);
-	}
-	if (M.block[0] < 0) {
-		M_sign = 1;
-		doi_dau_bit(M_bits, QInt_Size);
-		M = BinToDec_int(M_bits);
-	}
-	free(M_bits);
-
-	// A la bien tam
-	bool *A_bits = (bool *)malloc(sizeof(bool) * QInt_Size);
-	QInt A;
-	for (int i = 0; i < QInt_Size; ++i) {
-		A_bits[i] = 0;
-	}
-	bool Q_first = 0;
-
-	for (int i = 0; i < QInt_Size; ++i) {
-		// dich trai bits
-		Q_first = Q_bits[0];
-		for (int j = 0; j < QInt_Size - 1; ++j) {
-			Q_bits[j] = Q_bits[j + 1];
-			A_bits[j] = A_bits[j + 1];
-		}
-		A_bits[QInt_Size - 1] = Q_first;
-
-		A = BinToDec_int(A_bits);
-		A = A - M;
-
-		// A < 0
-		if (A.block[0] < 0) {
-			Q_bits[QInt_Size - 1] = 0;
-			A = A + M;
-		} else {
-			Q_bits[QInt_Size - 1] = 1;
-		}
-		free(A_bits);
-		A_bits = DecToBin_int(A);
-	}
-
-	// Xet dau ket qua
-	if ((Q_sign ^ M_sign) == 1) {
-		doi_dau_bit(Q_bits, QInt_Size);
-	}
-
-	QInt q = BinToDec_int(Q_bits);
+	bool *r;
+	bool *Quotient = chia_bits(Q_bits, M_bits, QInt_Size, r);
+	QInt q = BinToDec_int(Quotient);
 	free(Q_bits);
-	free(A_bits);
+	free(M_bits);
+	free(r);
+	free(Quotient);
 	return q;
 }
 

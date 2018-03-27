@@ -25,6 +25,7 @@ const int Qfloat_Str10_ThapPhan = 33;
 
 const int Qfloat_Bits_Mu = 15;
 const int Qfloat_Bits_Sign = 1;
+const int Qfloat_block_size = 4;
 
 struct Qfloat {
 	int block[4];
@@ -45,3 +46,4 @@ Qfloat operator*(Qfloat, Qfloat);
 Qfloat operator/(Qfloat, Qfloat);
 
 void testScanQfloat();
+void testCongTruNhanChiaQfloat();

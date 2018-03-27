@@ -25,6 +25,28 @@ void cong_1_bit(bool *bits, int size)
 	}
 }
 
+void tru_1_bit(bool *bits, int size)
+{
+	if (bits[size - 1] == 1) {
+		// 1 - 1 = 0
+		bits[size - 1] = 0;
+	} else {
+		// (1)0 - 1 = 1
+		bits[size - 1] = 1;
+		int d = 1;
+		for (int i = size - 2; i >= 0; --i) {
+			if (d == 0)
+				break;
+			if (bits[i] == 1) {
+				bits[i] = 0;
+				d = 0;
+			} else {
+				bits[i] = 1;
+			}
+		}
+	}
+}
+
 void in_bit(bool *bits, int size)
 {
 	for (int i = 0; i < size; ++i) {
@@ -107,6 +129,7 @@ void int_to_seq(int x, bool *bits, int from, int to)
 		x >>= 1;
 	}
 }
+
 // Doi ra so nguyen khong dau
 int seq_to_uint(bool *bits, int from, int to)
 {
@@ -225,6 +248,68 @@ bool *nhan_bits(bool *bits_Q, bool *bits_M, int size)
 	return Q_copy;
 }
 
+// Chia 2 day bits so bu 2 Q/M = Qu + R
+bool *chia_bits(bool *Q_bits, bool *M_bits, int size, bool *&R_bits)
+{
+	bool *Qu = copy_bits(Q_bits, size);
+
+	// Xet dau
+	bool Qu_sign = 0;
+	bool M_sign = 0;
+	if (Qu[0] == 1) {
+		Qu_sign = 1;
+		doi_dau_bit(Qu, size);
+	}
+	if (M_bits[0] == 1) {
+		M_sign = 1;
+		doi_dau_bit(M_bits, size);
+	}
+
+	// A la bien tam
+	bool *A_bits = (bool *)malloc(sizeof(bool) * size);
+
+	for (int i = 0; i < size; ++i) {
+		A_bits[i] = 0;
+	}
+
+	bool Q_first = 0;
+
+	for (int i = 0; i < size; ++i) {
+		Q_first = Qu[0];
+
+		// dich trai bits
+		for (int j = 0; j < size - 1; ++j) {
+			Qu[j] = Qu[j + 1];
+			A_bits[j] = A_bits[j + 1];
+		}
+		Qu[size - 1] = 0;
+		A_bits[size - 1] = Q_first;
+
+		bool *temp = tru_bits(A_bits, M_bits, size);
+		free(A_bits);
+		A_bits = temp;
+
+		// A < 0
+		if (A_bits[0] == 1) {
+			Qu[size - 1] = 0;
+			temp = cong_bits(A_bits, M_bits, size);
+			free(A_bits);
+			A_bits = temp;
+
+		} else {
+			Qu[size - 1] = 1;
+		}
+	}
+
+	// Xet dau ket qua
+	if ((Qu_sign ^ M_sign) == 1) {
+		doi_dau_bit(Qu, size);
+	}
+
+	R_bits = A_bits;
+	return Qu;
+}
+
 // str10 "123456" or "-1234"
 // A = A + B (10-digits, A va B > 0)
 void cong_str10(char *A, char *B)
@@ -303,7 +388,7 @@ char *bit_to_str10(bool *bits, int size)
 	const int max_size = (int)((size * 3) / 10) + 1;
 
 	// xay dung num="00..01"
-	// roi nhan 2 dan dan theo temp_bits[]
+	// roi nhan 2 theo temp_bits[]
 	char *num = (char *)malloc(sizeof(char) * (max_size + 1));
 	num[max_size] = '\0';
 	for (int i = 0; i < max_size; ++i) {
@@ -376,4 +461,63 @@ bool *str10_to_bit(char *num, int size)
 	}
 	free(temp_num);
 	return bits;
+}
+
+// Tra ve char *
+char *cong_str10_unsigned(char *A, char *B)
+{
+	if (!A || !B || strlen(A) != strlen(B)) {
+		printf("A, B khong cung chieu dai\n");
+		return NULL;
+	}
+
+	int len = strlen(A);
+	char *result = (char *)malloc(sizeof(char) * len + 1);
+	result[len] = '\0';
+
+	int d = 0;
+	for (int i = strlen(A) - 1; i >= 0; --i) {
+		int sum = A[i] - '0' + B[i] - '0' + d;
+		result[i] = sum % 10 + '0';
+		d = sum / 10;
+	}
+	return result;
+}
+
+char *tru_str10_unsigned(char *A, char *B)
+{
+
+	if (!A || !B || strlen(A) != strlen(B)) {
+		printf("A, B khong cung chieu dai\n");
+		return NULL;
+	}
+	int len = strlen(A);
+	char *result = (char *)malloc(sizeof(char) * len + 1);
+	result[len] = '\0';
+
+	for (int i = 0; i < len; ++i) {
+		if (A[i] < B[i]) {
+			char *t = A;
+			A = B;
+			B = t;
+			break;
+		} else if (A[i] > B[i]) {
+			break;
+		}
+	}
+	bool remember = false;
+
+	for (int i = 0; i < len; i++) {
+		int temp = *(A + len - i - 1) - *(B + len - i - 1);
+		if (remember)
+			temp--;
+		if (temp < 0) {
+			temp += 10;
+			remember = true;
+		} else
+			remember = false;
+
+		*(result + len - i - 1) = temp + '0';
+	}
+	return result;
 }
