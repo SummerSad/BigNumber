@@ -11,8 +11,10 @@ int main(int argc, char *argv[])
 	if (argc != 4 ||
 	    (strcmp(argv[1], "int") != 0 && strcmp(argv[1], "float")) != 0) {
 		printf("Nhap lai theo cau truc\n");
-		printf("a int file_input file_output\n");
-		printf("a float file_input file_output\n");
+		printf(
+		    "1612180_1612628_1612403.exe int file_input file_output\n");
+		printf("1612180_1612628_1612403.exe float file_input "
+		       "file_output\n");
 		return 0;
 	}
 	if (strcmp(argv[1], "int") == 0) {
