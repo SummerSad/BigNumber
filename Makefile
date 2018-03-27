@@ -1,6 +1,6 @@
 CC = g++
 CFLAGS = -Wall -Wextra -Wshadow -Wfloat-equal -g
-SRCS = $(wildcard *.cpp)
+SRCS = $(wildcard src/*.cpp)
 
 all:
 	$(CC) $(CFLAGS) $(SRCS)
