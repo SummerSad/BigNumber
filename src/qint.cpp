@@ -157,9 +157,7 @@ bool *str16_to_bit(char *num, int size)
 
 char *bit_to_str16(bool *bits)
 {
-	QInt q = BinToDec_int(bits);
-	char *hexas = DecToHex_int(q);
-	return hexas;
+	return BinToHex_int(bits);
 }
 
 // Nhap xuat theo YEUCAU
