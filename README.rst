@@ -47,9 +47,15 @@ Run ::
 
         1612180_1612628_1612403.exe int file_input file_output
         1612180_1612628_1612403.exe float file_input file_output
- 
-Người thực hiện:
-===========================================================
-| Tran Hau [https://github.com/SummerSad]
-| Duy Thanh [https://github.com/thanhnguyenduy2304]
-| Hoai Nam [https://github.com/NamTran1998]
+
+Người thực hiện
+===============
+
+`Tran Hau
+<https://github.com/SummerSad>`_
+
+`Duy Thanh
+<https://github.com/thanhnguyenduy2304>`_
+
+`Hoai Nam
+<https://github.com/NamTran1998>`_
