@@ -781,7 +781,9 @@ Qfloat operator*(Qfloat x, Qfloat y)
 	free(y_bits);
 	free(mu_z_biased);
 
-	return BinToDec_float(Qfloat_bits);
+	z = BinToDec_float(Qfloat_bits);
+	free(Qfloat_bits);
+	return z;
 }
 
 // chuyen thap phan float qua binary 0<x<1
@@ -894,7 +896,9 @@ Qfloat operator/(Qfloat x, Qfloat y)
 	free(y_bits);
 	free(mu_z_biased);
 
-	return BinToDec_float(Qfloat_bits);
+	z = BinToDec_float(Qfloat_bits);
+	free(Qfloat_bits);
+	return z;
 }
 
 bool *lay_bits(bool *bits, int from, int to)
