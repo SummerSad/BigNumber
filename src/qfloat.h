@@ -2,10 +2,6 @@
  * YEUCAU ham yeu cau tu do an
  * TODO ke hoach can lam
  * "If it ain't broke, don't fix it"
- * Pham vi so cham dong 128-bit
- * -(2-2^112)*2^16384 -> -2^(-16495) -> 0 -> 2^(-16495) -> (2-2^112)*2^16384
- * (2-2^112)*2^16384 ~ (2-2^112)*1.341*10^4928
- * 2^-16495 ~ 3.85*10^(-4962)
  */
 
 const int Qfloat_bits_size = 128;
