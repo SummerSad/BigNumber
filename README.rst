@@ -50,6 +50,6 @@ Run ::
  
 Người thực hiện:
 ===========================================================
-Tran Hau [https://github.com/SummerSad]
-Duy Thanh [https://github.com/thanhnguyenduy2304]
-Hoai Nam [https://github.com/NamTran1998]
+| Tran Hau [https://github.com/SummerSad]
+| Duy Thanh [https://github.com/thanhnguyenduy2304]
+| Hoai Nam [https://github.com/NamTran1998]
