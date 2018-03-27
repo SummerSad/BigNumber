@@ -9,9 +9,14 @@ all:
 debug:
 	$(CC) $(CFLAGS) $(SRCS) -g -o $(NAME)
 
-mem:
-	$(CC) $(CFLAGS) $(SRCS)
+mem: all
 	drmemory.exe $(NAME)
+
+int: all
+	$(NAME) int input.txt output.txt
+
+float: all
+	$(NAME) float input.txt output.txt
 
 clean:
 	del *.exe

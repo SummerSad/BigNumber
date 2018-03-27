@@ -3,5 +3,5 @@
 *.o
 *.out
 *.stackdump
-input
-output
+input*
+output*
