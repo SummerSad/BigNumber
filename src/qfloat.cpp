@@ -350,7 +350,7 @@ char *chuyen_so_mu_tu_biased(bool *bits)
 char *chuyen_thaphan_bits(bool *bits, int so_mu)
 {
 
-	int max_size = Qfloat_MAX_STR2;
+	int max_size = Qfloat_MAX_STR10;
 	// Tao chuoi thap phan str 10
 	char *thapphan_str10 = (char *)malloc(sizeof(char) * max_size + 1);
 	thapphan_str10[max_size] = '\0';
@@ -715,7 +715,7 @@ Qfloat operator*(Qfloat x, Qfloat y)
 	char *y_thapphan = chuyen_thaphan_bits(y_bits, -1);
 
 	// chuyen x_thapphan sang day bit
-	int max_size = Qfloat_Bits_ThapPhan;
+	int max_size = Qfloat_MAX_STR2;
 	bool *x_thapphan_bits = str10_to_bit(x_thapphan, max_size);
 	free(x_thapphan);
 

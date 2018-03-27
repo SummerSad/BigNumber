@@ -186,7 +186,7 @@ void file_qfloat(char *input, char *output)
 		return;
 	}
 	FILE *f_out = fopen(output, "w");
-	const int MAX = 200;
+	const int MAX = 5000;
 	char line[MAX];
 	while (fgets(line, MAX, f_in)) {
 		int count;
