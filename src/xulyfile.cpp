@@ -7,6 +7,8 @@
 #include <stdlib.h>
 #include <string.h>
 
+const int MAX_CHAR_IN_LINE = 1000000;
+
 char **chia_thanh_toan_hang(char *line, int &count);
 bool *tinh_toan_2_ngoi_int(char **str, bool *bits_1, bool *bits_3);
 char *chuyen_co_so_int(char **str, bool *bits);
@@ -21,9 +23,8 @@ void file_qint(char *input, char *output)
 		return;
 	}
 	FILE *f_out = fopen(output, "w");
-	const int MAX = 200;
-	char line[MAX];
-	while (fgets(line, MAX, f_in)) {
+	char *line = (char *)malloc(sizeof(char) * MAX_CHAR_IN_LINE);
+	while (fgets(line, MAX_CHAR_IN_LINE, f_in)) {
 		int count;
 		char **str = chia_thanh_toan_hang(line, count);
 		bool *bits_kq = NULL;
@@ -116,6 +117,7 @@ void file_qint(char *input, char *output)
 		if (str)
 			free(str);
 	}
+	free(line);
 	fclose(f_in);
 	fclose(f_out);
 }
@@ -186,9 +188,8 @@ void file_qfloat(char *input, char *output)
 		return;
 	}
 	FILE *f_out = fopen(output, "w");
-	const int MAX = 5000;
-	char line[MAX];
-	while (fgets(line, MAX, f_in)) {
+	char *line = (char *)malloc(sizeof(char) * MAX_CHAR_IN_LINE);
+	while (fgets(line, MAX_CHAR_IN_LINE, f_in)) {
 		int count;
 		char **str = chia_thanh_toan_hang(line, count);
 		bool *bits_kq = NULL;
@@ -226,7 +227,7 @@ void file_qfloat(char *input, char *output)
 		if (str)
 			free(str);
 	}
-
+	free(line);
 	fclose(f_in);
 	fclose(f_out);
 }
