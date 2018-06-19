@@ -3,5 +3,4 @@
 *.o
 *.out
 *.stackdump
-input*
-output*
+*2.txt

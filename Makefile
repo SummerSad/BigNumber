@@ -13,10 +13,10 @@ mem: all
 	drmemory.exe $(NAME)
 
 int: all
-	$(NAME) int input.txt output.txt
+	$(NAME) int int_1.txt int_2.txt
 
 float: all
-	$(NAME) float input.txt output.txt
+	$(NAME) float float_1.txt float_2.txt
 
 clean:
 	del *.exe

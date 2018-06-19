@@ -25,10 +25,14 @@ void file_qint(char *input, char *output)
 	FILE *f_out = fopen(output, "w");
 	char *line = (char *)malloc(sizeof(char) * MAX_CHAR_IN_LINE);
 	while (fgets(line, MAX_CHAR_IN_LINE, f_in)) {
+		// remove '\n' in line
+		line[strcspn(line, "\n")] = 0;
+		// chia input thanh toan hang
 		int count;
 		char **str = chia_thanh_toan_hang(line, count);
 		bool *bits_kq = NULL;
 		char *chars_kq = NULL;
+		// printf("%d\n", count);
 		// o1 o2 o3 o4
 		if (count == 4) {
 			// Khi shift a << b, b la int
@@ -85,6 +89,7 @@ void file_qint(char *input, char *output)
 				chars_kq = bit_to_str16(bits_kq);
 			}
 		} else if (count == 3) {
+			// printf("3: %s %s %s\n", str[0], str[1], str[2]);
 			bool *bits = NULL;
 			if (strcmp(str[0], "10") == 0) {
 				bits = str10_to_bit(str[2], QInt_Size);
@@ -129,10 +134,10 @@ char **chia_thanh_toan_hang(char *line, int &count)
 	int len = strlen(line);
 	int first_w = 0;
 	int space = 0;
-	char **str = NULL; // luu o1 o2 ...
-	count = 0;	 // luu bao nhieu
-	while (space < len) {
-		if (isspace(line[space])) {
+	char **str = NULL; // luu toan hang ...
+	count = 0;	 // dem bao nhieu toan hang
+	while (space <= len) {
+		if (isspace(line[space]) || line[space] == '\0') {
 			str =
 			    (char **)realloc(str, sizeof(char *) * (count + 1));
 			str[count] = (char *)malloc(sizeof(char) *
@@ -190,6 +195,10 @@ void file_qfloat(char *input, char *output)
 	FILE *f_out = fopen(output, "w");
 	char *line = (char *)malloc(sizeof(char) * MAX_CHAR_IN_LINE);
 	while (fgets(line, MAX_CHAR_IN_LINE, f_in)) {
+		// remove '\n' in line
+		line[strcspn(line, "\n")] = 0;
+		// printf("%s\n", line);
+		// chia input thanh toan hang
 		int count;
 		char **str = chia_thanh_toan_hang(line, count);
 		bool *bits_kq = NULL;
