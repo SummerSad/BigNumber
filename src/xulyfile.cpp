@@ -109,7 +109,11 @@ void file_qint(char *input, char *output)
 				free(bits);
 		}
 
-		fprintf(f_out, "%s\n", chars_kq);
+		// eliminate 0, example 00001 --> 1
+		int pos_0 = 0;
+		while (chars_kq[pos_0] == '0' && chars_kq[pos_0 + 1] != '\0')
+			++pos_0;
+		fprintf(f_out, "%s\n", chars_kq + pos_0);
 
 		// free memory
 		if (bits_kq)
